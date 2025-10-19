@@ -3,7 +3,13 @@
   "features": [
     {
       "type": "Feature",
-      "properties": {"name": "Universitas Nusa Putra"},
+      "properties": {
+        "name": "Nusa Putra University",
+        "type": "campus",
+        "desc": "Kampus utama dengan berbagai jurusan teknologi dan bisnis.",
+        "image": "assets/Gedung UNP.jpg",
+        "link": "https://nusaputra.ac.id"
+      },
       "geometry": {
         "type": "Point",
         "coordinates": [106.87354211084259, -6.905161529160896]
@@ -11,10 +17,16 @@
     },
     {
       "type": "Feature",
-      "properties": {"name": "Kost dekat pesantren"},
+      "properties": {
+        "name": "Kostan Dekat Pesantren",
+        "type": "kost",
+        "desc": "Tempat kost nyaman untuk mahasiswa, dekat kampus.",
+        "image": "assets/kost.jpg",
+        "link": "https://maps.google.com?q=-6.908656677296709,106.8722584065289"
+      },
       "geometry": {
         "type": "Point",
-        "coordinates": [106.8722584065289,-6.908656677296709]
+        "coordinates": [106.8722584065289, -6.908656677296709]
       }
     }
   ]
