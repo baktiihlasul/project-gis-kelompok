@@ -10,6 +10,13 @@ Kelompok GIS
 
 
 
+
+
+
+
+
+
+
 tooltip
 <img width="880" height="820" alt="Screenshot 2025-10-25 192718" src="https://github.com/user-attachments/assets/0f7fe387-2a15-45fb-8aaf-d03c96592c0a" />
 
@@ -17,8 +24,21 @@ tooltip
 
 
 
+
+
+
+
+
+
+
 popup
 <img width="880" height="785" alt="Screenshot 2025-10-25 192724" src="https://github.com/user-attachments/assets/fbf96eb1-f1fa-464d-8a05-972f4219ab1b" />
+
+
+
+
+
+
 
 
 
