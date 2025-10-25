@@ -1,0 +1,48 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Area Kampus Nusa Putra",
+        "type": "campus"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [106.873, -6.9048],
+            [106.874, -6.9048],
+            [106.874, -6.9056],
+            [106.873, -6.9056],
+            [106.873, -6.9048]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Zona Kosan Terdekat (Radius 500m)",
+        "type": "kost-zone"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [106.8729, -6.9049],
+            [106.874, -6.905],
+            [106.8741, -6.9063],
+            [106.8735, -6.9072],
+            [106.8725, -6.9087],
+            [106.8717, -6.9085],
+            [106.8708, -6.9065],
+            [106.8713, -6.9053],
+            [106.8722, -6.9048],
+            [106.8729, -6.9049]
+          ]
+        ]
+      }
+    }
+  ]
+}

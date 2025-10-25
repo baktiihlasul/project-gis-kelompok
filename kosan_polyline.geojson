@@ -1,0 +1,75 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Rute ke Kost Pesantren AS-Salam",
+        "jarak": "500 meter"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [106.87344808094224, -6.905182345406646],
+          [106.8722584065289, -6.908656677296709]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Rute ke Kost Pondok Mahasiswa",
+        "jarak": "400 meter"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [106.87344808094224, -6.905182345406646],
+          [106.874, -6.906]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Rute ke Kost Putra Harapan",
+        "jarak": "600 meter"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [106.87344808094224, -6.905182345406646],
+          [106.8725, -6.907]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Rute ke Kost Sriwijaya",
+        "jarak": "350 meter"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [106.87344808094224, -6.905182345406646],
+          [106.8735, -6.9055]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Rute ke Kost Al-Hidayah",
+        "jarak": "550 meter"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [106.87344808094224, -6.905182345406646],
+          [106.8718, -6.908]
+        ]
+      }
+    }
+  ]
+}

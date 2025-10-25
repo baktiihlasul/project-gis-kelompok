@@ -1,0 +1,98 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Nusa Putra University",
+        "type": "campus",
+        "desc": "Universitas Nusa Putra",
+        "icon": "campus"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [106.87344808094224, -6.905182345406646]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kost Pesantren AS-Salam",
+        "type": "kost",
+        "desc": "Kost dekat pesantren, harga terjangkau",
+        "harga": "Rp 500.000 - 800.000/bulan",
+        "fasilitas": "KM Dalam, WiFi, Listrik",
+        "jarak": "500 meter dari kampus",
+        "icon": "kost"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [106.8722584065289, -6.908656677296709]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kost Pondok Mahasiswa",
+        "type": "kost",
+        "desc": "Kost khusus mahasiswa, lingkungan aman",
+        "harga": "Rp 600.000 - 1.000.000/bulan",
+        "fasilitas": "AC, WiFi, Dapur, Parkir",
+        "jarak": "400 meter dari kampus",
+        "icon": "kost"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [106.874, -6.906]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kost Putra Harapan",
+        "type": "kost",
+        "desc": "Kost putra, suasana asri",
+        "harga": "Rp 450.000 - 700.000/bulan",
+        "fasilitas": "Listrik, Air, WiFi",
+        "jarak": "600 meter dari kampus",
+        "icon": "kost"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [106.8725, -6.907]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kost Sriwijaya",
+        "type": "kost",
+        "desc": "Kost putra/putri, akses mudah ke kampus",
+        "harga": "Rp 550.000 - 850.000/bulan",
+        "fasilitas": "KM Dalam, WiFi, Kulkas",
+        "jarak": "350 meter dari kampus",
+        "icon": "kost"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [106.8735, -6.9055]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kost Al-Hidayah",
+        "type": "kost",
+        "desc": "Kost islami, lingkungan religius",
+        "harga": "Rp 500.000 - 750.000/bulan",
+        "fasilitas": "Mushola, WiFi, Listrik",
+        "jarak": "550 meter dari kampus",
+        "icon": "kost"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [106.8718, -6.908]
+      }
+    }
+  ]
+}

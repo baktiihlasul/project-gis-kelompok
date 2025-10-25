@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peta Nusa Putra University & Rekomendasi Kosan</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #ffffff;
+            color: #333;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: #666;
+        }
+
+        #map {
+            height: 650px;
+            width: 100%;
+        }
+
+        .legend {
+            position: absolute;
+            bottom: 30px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            border: 1px solid #ddd;
+            z-index: 1000;
+            min-width: 200px;
+        }
+
+        .legend h3 {
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #333;
+            border-bottom: 2px solid #333;
+            padding-bottom: 5px;
+        }
+
+        .legend-item {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .legend-icon {
+            width: 25px;
+            height: 25px;
+            margin-right: 10px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            border: 2px solid #ddd;
+            background: #f5f5f5;
+        }
+
+        .legend-line {
+            width: 30px;
+            height: 4px;
+            margin-right: 10px;
+            background: #666;
+            border-radius: 2px;
+        }
+
+        .legend-area {
+            width: 25px;
+            height: 25px;
+            margin-right: 10px;
+            border-radius: 4px;
+            border: 2px solid #666;
+            display: inline-block;
+        }
+
+        .info-panel {
+            padding: 20px;
+            background: #ffffff;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .info-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .info-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .info-card h4 {
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .info-card p {
+            color: #666;
+            font-size: 13px;
+        }
+
+        /* Styling untuk Popup */
+        .leaflet-popup-content-wrapper {
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .custom-popup .leaflet-popup-content {
+            margin: 15px;
+        }
+
+        /* Styling untuk Tooltip */
+        .leaflet-tooltip {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 8px 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .leaflet-tooltip-top:before {
+            border-top-color: #ccc;
+        }
+
+        .leaflet-tooltip-bottom:before {
+            border-bottom-color: #ccc;
+        }
+
+        .leaflet-tooltip-left:before {
+            border-left-color: #ccc;
+        }
+
+        .leaflet-tooltip-right:before {
+            border-right-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗺️ Peta Nusa Putra University & Rekomendasi Kosan</h1>
+            <p>Universitas Nusa Putra - Kampus Sukabumi</p>
+        </div>
+
+        <div id="map"></div>
+
+        <div class="info-panel">
+            <h3 style="color: #333; margin-bottom: 15px;">ℹ️ Informasi Peta</h3>
+            <div class="info-row">
+                <div class="info-card">
+                    <h4>📍 Koordinat Kampus</h4>
+                    <p>-6.905182345406646, 106.87344808094224</p>
+                </div>
+                <div class="info-card">
+                    <h4>🎓 Total Rekomendasi</h4>
+                    <p>5 Kost Terdekat dari Kampus</p>
+                </div>
+                <div class="info-card">
+                    <h4>📏 Jarak Terdekat</h4>
+                    <p>350 meter (Kost Sriwijaya)</p>
+                </div>
+                <div class="info-card">
+                    <h4>💰 Harga Terjangkau</h4>
+                    <p>Rp 450.000 - Rp 1.000.000/bulan</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="legend">
+        <h3>🎨 Keterangan</h3>
+        <div class="legend-item">
+            <div class="legend-icon">🎓</div>
+            <span style="font-size: 13px;">Kampus Nusa Putra</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-icon">🏠</div>
+            <span style="font-size: 13px;">Kosan Terdekat</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-line"></div>
+            <span style="font-size: 13px;">Rute ke Kosan</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-area" style="background-color: rgba(0,0,0,0.1);"></div>
+            <span style="font-size: 13px;">Area Kampus</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-area" style="background-color: rgba(0,0,0,0.1); border-style: dashed;"></div>
+            <span style="font-size: 13px;">Zona Kosan</span>
+        </div>
+    </div>
+
+    <script>
+        // Inisialisasi peta dengan koordinat Nusa Putra University
+        var map = L.map('map').setView([-6.905182345406646, 106.87344808094224], 16);
+
+        // Base Layers
+        var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        });
+
+        var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: '© Esri'
+        });
+
+        // Tambahkan base layer default
+        osmLayer.addTo(map);
+
+        // Inisialisasi overlay groups
+        var markerGroup = L.layerGroup();
+        var polylineGroup = L.layerGroup();
+        var polygonGroup = L.layerGroup();
+
+        // Custom Icons
+        var campusIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#fff; border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:2px solid #333; box-shadow:0 3px 8px rgba(0,0,0,0.2); font-size:20px;'>🎓</div>",
+            iconSize: [40, 40],
+            iconAnchor: [20, 20]
+        });
+
+        var kostIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#fff; border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border:2px solid #666; box-shadow:0 2px 6px rgba(0,0,0,0.15); font-size:16px;'>🏠</div>",
+            iconSize: [32, 32],
+            iconAnchor: [16, 16]
+        });
+
+        // Load dan tampilkan Marker (Kosan & Kampus)
+        fetch('kosan_markers.geojson')
+            .then(res => res.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    pointToLayer: function(feature, latlng) {
+                        if (feature.properties.type === 'campus') {
+                            return L.marker(latlng, {icon: campusIcon});
+                        } else {
+                            return L.marker(latlng, {icon: kostIcon});
+                        }
+                    },
+                    onEachFeature: function(feature, layer) {
+                        // Tooltip - Muncul saat hover
+                        var tooltipContent = '<strong style="color:#2c3e50; font-size:14px;">' + feature.properties.name + '</strong>';
+                                                 if (feature.properties.type === 'kost' && feature.properties.jarak) {
+                             tooltipContent += '<br><span style="color:#666; font-size:12px;">📍 ' + feature.properties.jarak + '</span>';
+                         }
+                        layer.bindTooltip(tooltipContent, {
+                            permanent: false,
+                            direction: 'top',
+                            offset: [0, -10],
+                            opacity: 0.9
+                        });
+
+                        // Popup - Muncul saat klik
+                        var content = '<div style="min-width:250px; max-width:300px;">';
+                                                 content += '<h3 style="margin:0 0 10px 0; color:#2c3e50; font-size:18px; border-bottom:2px solid #333; padding-bottom:8px;">' + feature.properties.name + '</h3>';
+                        
+                        if (feature.properties.desc) {
+                            content += '<p style="margin:8px 0; color:#7f8c8d; font-size:13px; line-height:1.5;">' + feature.properties.desc + '</p>';
+                        }
+                        
+                        if (feature.properties.harga || feature.properties.fasilitas) {
+                            content += '<hr style="margin:12px 0; border:none; border-top:1px solid #ecf0f1;">';
+                        }
+                        
+                                                 if (feature.properties.harga) {
+                             content += '<p style="margin:6px 0; font-size:14px; background:#f8f9fa; padding:8px; border-radius:5px;"><strong style="color:#333;">💵 Harga:</strong><br><span style="color:#2c3e50; font-weight:bold;">' + feature.properties.harga + '</span></p>';
+                         }
+                         
+                         if (feature.properties.fasilitas) {
+                             content += '<p style="margin:6px 0; font-size:14px; background:#f8f9fa; padding:8px; border-radius:5px;"><strong style="color:#333;">✨ Fasilitas:</strong><br><span style="color:#2c3e50;">' + feature.properties.fasilitas + '</span></p>';
+                         }
+                         
+                         if (feature.properties.jarak) {
+                             content += '<p style="margin:10px 0 0 0; padding:8px 15px; background:#333; color:white; border-radius:20px; display:inline-block; font-size:13px; font-weight:bold; box-shadow:0 2px 5px rgba(0,0,0,0.2);">📍 ' + feature.properties.jarak + '</p>';
+                         }
+                        
+                        content += '</div>';
+                        layer.bindPopup(content, {
+                            maxWidth: 350,
+                            className: 'custom-popup'
+                        });
+                    }
+                }).addTo(markerGroup);
+            });
+
+        // Load dan tampilkan Polyline (Rute)
+        fetch('kosan_polyline.geojson')
+            .then(res => res.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    style: function(feature) {
+                        return {
+                            color: '#666',
+                            weight: 3,
+                            opacity: 0.6,
+                            dashArray: '10, 5'
+                        };
+                    },
+                    onEachFeature: function(feature, layer) {
+                        // Tooltip untuk polyline
+                        layer.bindTooltip('<strong style="color:#2c3e50;">🛣️ ' + feature.properties.name + '</strong><br><span style="color:#666;">Jarak: ' + feature.properties.jarak + '</span>', {
+                            permanent: false,
+                            direction: 'top',
+                            opacity: 0.9
+                        });
+
+                        // Popup untuk polyline
+                        var popupContent = '<div style="min-width:200px;">';
+                        popupContent += '<h3 style="margin:0 0 10px 0; color:#2c3e50; font-size:16px; border-bottom:2px solid #333; padding-bottom:5px;">🛣️ Rute</h3>';
+                        popupContent += '<p style="margin:5px 0; color:#7f8c8d; font-size:13px;"><strong>' + feature.properties.name + '</strong></p>';
+                        popupContent += '<p style="margin:10px 0 0 0; padding:6px 12px; background:#333; color:white; border-radius:15px; display:inline-block; font-size:13px;">📍 ' + feature.properties.jarak + '</p>';
+                        popupContent += '</div>';
+                        
+                        layer.bindPopup(popupContent, {
+                            className: 'custom-popup'
+                        });
+                    }
+                }).addTo(polylineGroup);
+            });
+
+        // Load dan tampilkan Polygon (Area Kampus & Zona Kosan)
+        fetch('kosan_polygon.geojson')
+            .then(res => res.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    style: function(feature) {
+                        if (feature.properties.type === 'campus') {
+                            return {
+                                color: '#333',
+                                fillColor: '#333',
+                                fillOpacity: 0.2,
+                                weight: 2
+                            };
+                        } else {
+                            return {
+                                color: '#666',
+                                fillColor: '#666',
+                                fillOpacity: 0.15,
+                                weight: 2,
+                                dashArray: '10, 5'
+                            };
+                        }
+                    },
+                    onEachFeature: function(feature, layer) {
+                        // Tooltip untuk polygon
+                        var tooltipContent = '<strong style="color:#2c3e50;">';
+                        if (feature.properties.type === 'campus') {
+                            tooltipContent += '🎓 ';
+                        } else {
+                            tooltipContent += '🏘️ ';
+                        }
+                        tooltipContent += feature.properties.name + '</strong>';
+                        
+                        layer.bindTooltip(tooltipContent, {
+                            permanent: false,
+                            direction: 'center',
+                            opacity: 0.9,
+                            offset: [0, 0]
+                        });
+
+                        // Popup untuk polygon
+                        var popupContent = '<div style="min-width:200px;">';
+                        if (feature.properties.type === 'campus') {
+                            popupContent += '<h3 style="margin:0 0 10px 0; color:#333; font-size:16px; border-bottom:2px solid #333; padding-bottom:5px;">🎓 Area Kampus</h3>';
+                            popupContent += '<p style="margin:5px 0; color:#7f8c8d; font-size:13px;">' + feature.properties.name + '</p>';
+                            popupContent += '<p style="margin:10px 0 0 0; font-size:12px; color:#7f8c8d;">Lokasi: Universitas Nusa Putra Sukabumi</p>';
+                        } else {
+                            popupContent += '<h3 style="margin:0 0 10px 0; color:#333; font-size:16px; border-bottom:2px solid #666; padding-bottom:5px;">🏘️ Zona Kosan</h3>';
+                            popupContent += '<p style="margin:5px 0; color:#7f8c8d; font-size:13px;">' + feature.properties.name + '</p>';
+                            popupContent += '<p style="margin:10px 0 0 0; font-size:12px; color:#7f8c8d;">Radius 500 meter dari kampus</p>';
+                        }
+                        popupContent += '</div>';
+                        
+                        layer.bindPopup(popupContent, {
+                            className: 'custom-popup'
+                        });
+                    }
+                }).addTo(polygonGroup);
+            });
+
+        // Layer Control
+        var baseLayers = {
+            "OpenStreetMap": osmLayer,
+            "Satellite": satelliteLayer
+        };
+
+        var overlays = {
+            "📍 Marker Kosan": markerGroup,
+            "🛣️ Rute ke Kosan": polylineGroup,
+            "🗺️ Area Kampus & Zona": polygonGroup
+        };
+
+        // Tambahkan layer control ke peta
+        L.control.layers(baseLayers, overlays, {
+            position: 'topright',
+            collapsed: false
+        }).addTo(map);
+
+        // Tambahkan semua overlay default
+        markerGroup.addTo(map);
+        polylineGroup.addTo(map);
+        polygonGroup.addTo(map);
+    </script>
+</body>
+</html>
