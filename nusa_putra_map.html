@@ -6,6 +6,8 @@
     <title>Peta Nusa Putra University & Rekomendasi Kosan</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-search/dist/leaflet-search.min.css" />
+    <script src="https://unpkg.com/leaflet-search/dist/leaflet-search.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -98,6 +100,26 @@
             height: 4px;
             margin-right: 10px;
             background: #666;
+        }
+
+        .leaflet-control-search {
+            max-width: 400px;
+        }
+
+        .leaflet-control-search .search-input {
+            width: 300px;
+            padding: 8px 12px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .leaflet-control-search .search-tooltip {
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             border-radius: 2px;
         }
 
@@ -269,11 +291,14 @@
             iconAnchor: [16, 16]
         });
 
+        // Variabel untuk menyimpan semua marker
+        let allMarkers = [];
+
         // Load dan tampilkan Marker (Kosan & Kampus)
         fetch('kosan_markers.geojson')
             .then(res => res.json())
             .then(data => {
-                L.geoJSON(data, {
+                let searchLayer = L.geoJSON(data, {
                     pointToLayer: function(feature, latlng) {
                         if (feature.properties.type === 'campus') {
                             return L.marker(latlng, {icon: campusIcon});
@@ -324,7 +349,29 @@
                             className: 'custom-popup'
                         });
                     }
-                }).addTo(markerGroup);
+                }).addTo(map);
+
+                // Tambahkan kontrol pencarian
+                var searchControl = new L.Control.Search({
+                    layer: searchLayer,
+                    propertyName: 'name',
+                    marker: false,
+                    moveToLocation: function(latlng, title, map) {
+                        map.setView(latlng, 18); // Zoom lebih dekat ke lokasi yang dicari
+                        var searchedMarker = searchLayer.getLayers().find(layer => {
+                            return layer.feature.properties.name === title;
+                        });
+                        if (searchedMarker) {
+                            searchedMarker.openPopup();
+                        }
+                    },
+                    initial: false,
+                    zoom: 18,
+                    textPlaceholder: 'Cari lokasi kosan...',
+                    textErr: 'Lokasi tidak ditemukan'
+                });
+                
+                map.addControl(searchControl);
             });
 
         // Load dan tampilkan Polyline (Rute)
@@ -334,9 +381,9 @@
                 L.geoJSON(data, {
                     style: function(feature) {
                         return {
-                            color: '#666',
-                            weight: 3,
-                            opacity: 0.6,
+                            color: '#e53935', // merah terang
+                            weight: 5,
+                            opacity: 0.9,
                             dashArray: '10, 5'
                         };
                     },
@@ -370,16 +417,16 @@
                     style: function(feature) {
                         if (feature.properties.type === 'campus') {
                             return {
-                                color: '#333',
-                                fillColor: '#333',
-                                fillOpacity: 0.2,
+                                color: '#1976d2', // biru
+                                fillColor: '#1976d2',
+                                fillOpacity: 0.18,
                                 weight: 2
                             };
                         } else {
                             return {
-                                color: '#666',
-                                fillColor: '#666',
-                                fillOpacity: 0.15,
+                                color: '#8e24aa', // ungu
+                                fillColor: '#8e24aa',
+                                fillOpacity: 0.13,
                                 weight: 2,
                                 dashArray: '10, 5'
                             };
