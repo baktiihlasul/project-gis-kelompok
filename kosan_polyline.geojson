@@ -4,7 +4,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Rute ke Kost Pesantren AS-Salam",
+        "name": "Rute ke Kost pa haji naim",
         "jarak": "500 meter"
       },
       "geometry": {
@@ -18,7 +18,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Rute ke Kost Pondok Mahasiswa",
+        "name": "Rute ke Kost mawar merah jingga",
         "jarak": "400 meter"
       },
       "geometry": {
@@ -32,7 +32,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Rute ke Kost Putra Harapan",
+        "name": "Rute ke Kost Putri melati",
         "jarak": "600 meter"
       },
       "geometry": {
@@ -60,7 +60,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Rute ke Kost Al-Hidayah",
+        "name": "Rute ke Kost Melati Indah",
         "jarak": "550 meter"
       },
       "geometry": {

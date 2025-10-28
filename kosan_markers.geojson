@@ -7,6 +7,7 @@
         "name": "Nusa Putra University",
         "type": "campus",
         "desc": "Universitas Nusa Putra",
+        "image": "assets/Gedung UNP.jpg",
         "icon": "campus"
       },
       "geometry": {
@@ -17,12 +18,13 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Kost Pesantren AS-Salam",
+        "name": "Kost pa haji naim",
         "type": "kost",
-        "desc": "Kost dekat pesantren, harga terjangkau",
-        "harga": "Rp 500.000 - 800.000/bulan",
+        "desc": " harga terjangkau",
+        "harga": "Rp 500.000/bulan",
         "fasilitas": "KM Dalam, WiFi, Listrik",
         "jarak": "500 meter dari kampus",
+        "image": "assets/kost.jpg",
         "icon": "kost"
       },
       "geometry": {
@@ -33,12 +35,13 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Kost Pondok Mahasiswa",
+        "name": "Kost mawar merah jingga",
         "type": "kost",
         "desc": "Kost khusus mahasiswa, lingkungan aman",
-        "harga": "Rp 600.000 - 1.000.000/bulan",
+        "harga": "Rp 600.000/bulan",
         "fasilitas": "AC, WiFi, Dapur, Parkir",
         "jarak": "400 meter dari kampus",
+        "image": "assets/kostan1.jpg",
         "icon": "kost"
       },
       "geometry": {
@@ -49,12 +52,13 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Kost Putra Harapan",
+        "name": "Kost Putri melati",
         "type": "kost",
-        "desc": "Kost putra, suasana asri",
-        "harga": "Rp 450.000 - 700.000/bulan",
+        "desc": "Kost putri, suasana asri",
+        "harga": "Rp 450.000 /bulan",
         "fasilitas": "Listrik, Air, WiFi",
         "jarak": "600 meter dari kampus",
+        "image": "assets/kost2.jpg",
         "icon": "kost"
       },
       "geometry": {
@@ -65,12 +69,13 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Kost Sriwijaya",
+        "name": "Kost nusa bangsa",
         "type": "kost",
         "desc": "Kost putra/putri, akses mudah ke kampus",
         "harga": "Rp 550.000 - 850.000/bulan",
         "fasilitas": "KM Dalam, WiFi, Kulkas",
         "jarak": "350 meter dari kampus",
+        "image": "assets/kost3.jpg",
         "icon": "kost"
       },
       "geometry": {
@@ -81,12 +86,13 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Kost Al-Hidayah",
+        "name": "Kost nu bener ah",
         "type": "kost",
-        "desc": "Kost islami, lingkungan religius",
-        "harga": "Rp 500.000 - 750.000/bulan",
+        "desc": "Kost murah meriah, lingkungan religius",
+        "harga": "Rp 500.000/bulan",
         "fasilitas": "Mushola, WiFi, Listrik",
         "jarak": "550 meter dari kampus",
+        "image": "assets/kost4.jpg",
         "icon": "kost"
       },
       "geometry": {

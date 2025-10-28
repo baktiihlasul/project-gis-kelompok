@@ -197,6 +197,23 @@
         .leaflet-tooltip-right:before {
             border-right-color: #ccc;
         }
+
+        /* Popup image styling */
+        .popup-img-container {
+            width: 100%;
+            max-height: 180px;
+            overflow: hidden;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .popup-image {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -321,28 +338,34 @@
 
                         // Popup - Muncul saat klik
                         var content = '<div style="min-width:250px; max-width:300px;">';
-                                                 content += '<h3 style="margin:0 0 10px 0; color:#2c3e50; font-size:18px; border-bottom:2px solid #333; padding-bottom:8px;">' + feature.properties.name + '</h3>';
-                        
+
+                        // Jika ada gambar di properti, tampilkan di atas popup
+                        if (feature.properties && feature.properties.image) {
+                            content += '<div class="popup-img-container"><img src="' + feature.properties.image + '" alt="' + (feature.properties.name || '') + '" class="popup-image"></div>';
+                        }
+
+                        content += '<h3 style="margin:0 0 10px 0; color:#2c3e50; font-size:18px; border-bottom:2px solid #333; padding-bottom:8px;">' + feature.properties.name + '</h3>';
+
                         if (feature.properties.desc) {
                             content += '<p style="margin:8px 0; color:#7f8c8d; font-size:13px; line-height:1.5;">' + feature.properties.desc + '</p>';
                         }
-                        
+
                         if (feature.properties.harga || feature.properties.fasilitas) {
                             content += '<hr style="margin:12px 0; border:none; border-top:1px solid #ecf0f1;">';
                         }
-                        
-                                                 if (feature.properties.harga) {
-                             content += '<p style="margin:6px 0; font-size:14px; background:#f8f9fa; padding:8px; border-radius:5px;"><strong style="color:#333;">💵 Harga:</strong><br><span style="color:#2c3e50; font-weight:bold;">' + feature.properties.harga + '</span></p>';
-                         }
-                         
-                         if (feature.properties.fasilitas) {
-                             content += '<p style="margin:6px 0; font-size:14px; background:#f8f9fa; padding:8px; border-radius:5px;"><strong style="color:#333;">✨ Fasilitas:</strong><br><span style="color:#2c3e50;">' + feature.properties.fasilitas + '</span></p>';
-                         }
-                         
-                         if (feature.properties.jarak) {
-                             content += '<p style="margin:10px 0 0 0; padding:8px 15px; background:#333; color:white; border-radius:20px; display:inline-block; font-size:13px; font-weight:bold; box-shadow:0 2px 5px rgba(0,0,0,0.2);">📍 ' + feature.properties.jarak + '</p>';
-                         }
-                        
+
+                        if (feature.properties.harga) {
+                            content += '<p style="margin:6px 0; font-size:14px; background:#f8f9fa; padding:8px; border-radius:5px;"><strong style="color:#333;">💵 Harga:</strong><br><span style="color:#2c3e50; font-weight:bold;">' + feature.properties.harga + '</span></p>';
+                        }
+
+                        if (feature.properties.fasilitas) {
+                            content += '<p style="margin:6px 0; font-size:14px; background:#f8f9fa; padding:8px; border-radius:5px;"><strong style="color:#333;">✨ Fasilitas:</strong><br><span style="color:#2c3e50;">' + feature.properties.fasilitas + '</span></p>';
+                        }
+
+                        if (feature.properties.jarak) {
+                            content += '<p style="margin:10px 0 0 0; padding:8px 15px; background:#333; color:white; border-radius:20px; display:inline-block; font-size:13px; font-weight:bold; box-shadow:0 2px 5px rgba(0,0,0,0.2);">📍 ' + feature.properties.jarak + '</p>';
+                        }
+
                         content += '</div>';
                         layer.bindPopup(content, {
                             maxWidth: 350,
