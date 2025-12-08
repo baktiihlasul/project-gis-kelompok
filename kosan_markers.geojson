@@ -69,10 +69,10 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Kost nusa bangsa",
+        "name": "Kost Sriwijaya",
         "type": "kost",
         "desc": "Kost putra/putri, akses mudah ke kampus",
-        "harga": "Rp 550.000 - 850.000/bulan",
+        "harga": "Rp 550.000/bulan",
         "fasilitas": "KM Dalam, WiFi, Kulkas",
         "jarak": "350 meter dari kampus",
         "image": "assets/kost3.jpg",
