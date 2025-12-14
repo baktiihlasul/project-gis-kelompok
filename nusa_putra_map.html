@@ -239,6 +239,187 @@
             font-size: 14px;
             color: #333;
         }
+
+        /* GPS Control Panel Modal */
+        .gps-modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9998;
+        }
+
+        .gps-modal-backdrop.active {
+            display: block;
+        }
+
+        .gps-control-panel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            z-index: 9999;
+            min-width: 350px;
+            max-width: 90%;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .gps-control-panel.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        .gps-toggle-btn {
+            position: absolute;
+            top: 80px;
+            left: 10px;
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+
+        .gps-toggle-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.6);
+        }
+
+        .gps-control-panel h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 18px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 8px;
+            position: relative;
+        }
+
+        .gps-close-btn {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #f44336;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            transition: all 0.3s;
+        }
+
+        .gps-close-btn:hover {
+            background: #da190b;
+            transform: rotate(90deg);
+        }
+
+        .gps-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .gps-btn-start {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .gps-btn-start:hover {
+            background: #45a049;
+        }
+
+        .gps-btn-stop {
+            background: #f44336;
+            color: white;
+        }
+
+        .gps-btn-stop:hover {
+            background: #da190b;
+        }
+
+        .gps-btn-reset {
+            background: #FF9800;
+            color: white;
+        }
+
+        .gps-btn-reset:hover {
+            background: #e68900;
+        }
+
+        .gps-btn-save {
+            background: #2196F3;
+            color: white;
+        }
+
+        .gps-btn-save:hover {
+            background: #0b7dda;
+        }
+
+        .gps-stats {
+            margin-top: 15px;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+        .gps-stats p {
+            margin: 6px 0;
+            color: #333;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .status-active {
+            background: #4CAF50;
+            box-shadow: 0 0 10px #4CAF50;
+            animation: pulse-gps 2s infinite;
+        }
+
+        .status-inactive {
+            background: #999;
+        }
+
+        @keyframes pulse-gps {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
     </style>
 </head>
 <body>
@@ -273,6 +454,15 @@
         </div>
     </div>
 
+    <!-- GPS Toggle Button -->
+    <button class="gps-toggle-btn" onclick="toggleGPSPanel()" title="GPS Simulator">🛰️</button>
+
+    <!-- GPS Toggle Button -->
+    <button class="gps-toggle-btn" onclick="toggleGPSPanel()" title="GPS Simulator">🛰️</button>
+
+    <!-- GPS Modal Backdrop -->
+    <div class="gps-modal-backdrop" id="gpsBackdrop" onclick="toggleGPSPanel()"></div>
+
     <div class="legend">
         <h3>🎨 Keterangan</h3>
         <div class="legend-item">
@@ -298,6 +488,32 @@
         <div class="legend-item">
             <div class="legend-icon" style="background: #4CAF50;">🏪</div>
             <span style="font-size: 13px;">POI Sekitar (OSM)</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-icon" style="background: #2196F3;">🚗</div>
+            <span style="font-size: 13px;">GPS Real-time</span>
+        </div>
+    </div>
+
+    <!-- GPS Control Panel -->
+    <div class="gps-control-panel" id="gpsPanel">
+        <h3>🛰️ GPS Real-time Simulator
+            <button class="gps-close-btn" onclick="toggleGPSPanel()" title="Close">×</button>
+        </h3>
+        <div style="text-align: center;">
+            <button class="gps-btn gps-btn-start" onclick="startGPSSimulation()">▶️ Start</button>
+            <button class="gps-btn gps-btn-stop" onclick="stopGPSSimulation()">⏸️ Stop</button>
+            <button class="gps-btn gps-btn-reset" onclick="resetGPSSimulation()">🔄 Reset</button>
+            <button class="gps-btn gps-btn-save" onclick="saveToDatabase()">💾 Save</button>
+        </div>
+        <div class="gps-stats">
+            <p><span class="status-indicator status-inactive" id="statusIndicator"></span><strong>Status:</strong> <span id="gpsStatus">Tidak Aktif</span></p>
+            <p><strong>📍 Posisi:</strong> <span id="currentPosition">-</span></p>
+            <p><strong>🚀 Kecepatan:</strong> <span id="currentSpeed">0 km/h</span></p>
+            <p><strong>📏 Total Jarak:</strong> <span id="totalDistance">0 m</span></p>
+            <p><strong>⏱️ Waktu:</strong> <span id="elapsedTime">0s</span></p>
+            <p><strong>🕐 Timestamp:</strong> <span id="lastUpdate">-</span></p>
+            <p><strong>🎯 Titik:</strong> <span id="pointsCount">0</span></p>
         </div>
     </div>
 
@@ -452,9 +668,6 @@
             }
         }
 
-        // ===============================
-        //  FUNGSI LOAD OVERPASS API
-        // ===============================
         async function loadOverpassData() {
             try {
                 const radius = 1000; // radius 1 km
@@ -611,6 +824,75 @@
         loadNominatimData();
         loadOverpassData();
 
+        function addCustomPOI(lat, lng, name, type, description) {
+            // Pilih icon berdasarkan type
+            const poiInfo = getPOIIcon(type, type);
+            
+            // Hitung jarak dari kampus
+            const distance = Math.round(map.distance([campusLat, campusLng], [lat, lng]));
+            
+            // Buat custom marker
+            const icon = L.divIcon({
+                className: "poi-marker",
+                html: `
+                    <div style="
+                        width:35px; height:35px;
+                        background:${poiInfo.bg};
+                        border:2px solid ${poiInfo.color};
+                        border-radius:50%;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        font-size:18px;
+                        box-shadow:0 2px 6px rgba(0,0,0,0.3);
+                    ">
+                    ${poiInfo.icon}
+                    </div>
+                `,
+                iconSize: [35, 35],
+                iconAnchor: [17.5, 17.5]
+            });
+            
+            const marker = L.marker([lat, lng], { icon });
+            
+            // Tooltip
+            marker.bindTooltip(`
+                <strong>${poiInfo.icon} ${name}</strong><br>
+                <span style="font-size:11px;color:#666;">${distance}m dari kampus</span>
+            `);
+            
+            // Popup
+            marker.bindPopup(`
+                <div style="min-width:250px;">
+                    <h3 style="
+                        margin:0 0 10px;
+                        color:${poiInfo.color};
+                        font-size:16px;
+                        border-bottom:2px solid ${poiInfo.color};
+                        padding-bottom:6px;
+                    ">
+                        ${poiInfo.icon} ${name}
+                    </h3>
+                    <p><strong>Kategori:</strong> ${type}</p>
+                    <p><strong>Deskripsi:</strong> ${description}</p>
+                    <p><strong>Jarak:</strong> ${distance} meter dari kampus</p>
+                    <p style="font-size:11px;color:#777;margin-top:10px;">
+                        POI Custom - Ditambahkan Manual
+                    </p>
+                </div>
+            `);
+            
+            marker.addTo(poiGroup);
+            console.log(`✅ POI "${name}" berhasil ditambahkan`);
+        }
+
+        
+        addCustomPOI(-6.904500, 106.873500, "Warung Makan Pak Budi", "restaurant", "Warung makan murah dekat kampus");
+        addCustomPOI(-6.906000, 106.874000, "ATM BCA", "atm", "ATM 24 jam");
+        addCustomPOI(-6.905500, 106.872800, "Toko Buku Gramedia", "convenience", "Toko buku dan alat tulis");
+        addCustomPOI(-6.907000, 106.873200, "Indomaret 24 Jam", "convenience", "Minimarket 24 jam");
+        addCustomPOI(-6.904800, 106.874500, "Apotek Kimia Farma", "pharmacy", "Apotek lengkap");
+
         // Custom Icons
         var campusIcon = L.divIcon({
             className: 'custom-div-icon',
@@ -628,12 +910,13 @@
 
         // Variabel untuk menyimpan semua marker
         let allMarkers = [];
+        let searchLayer;
 
         // Load dan tampilkan Marker (Kosan & Kampus)
         fetch('kosan_markers.geojson')
             .then(res => res.json())
             .then(data => {
-                let searchLayer = L.geoJSON(data, {
+                searchLayer = L.geoJSON(data, {
                     pointToLayer: function(feature, latlng) {
                         if (feature.properties.type === 'campus') {
                             return L.marker(latlng, {icon: campusIcon});
@@ -644,9 +927,9 @@
                     onEachFeature: function(feature, layer) {
                         // Tooltip - Muncul saat hover
                         var tooltipContent = '<strong style="color:#2c3e50; font-size:14px;">' + feature.properties.name + '</strong>';
-                                                 if (feature.properties.type === 'kost' && feature.properties.jarak) {
-                             tooltipContent += '<br><span style="color:#666; font-size:12px;">📍 ' + feature.properties.jarak + '</span>';
-                         }
+                        if (feature.properties.type === 'kost' && feature.properties.jarak) {
+                            tooltipContent += '<br><span style="color:#666; font-size:12px;">📍 ' + feature.properties.jarak + '</span>';
+                        }
                         layer.bindTooltip(tooltipContent, {
                             permanent: false,
                             direction: 'top',
@@ -690,7 +973,7 @@
                             className: 'custom-popup'
                         });
                     }
-                }).addTo(map);
+                }).addTo(markerGroup);
 
                 // Tambahkan kontrol pencarian
                 var searchControl = new L.Control.Search({
@@ -826,7 +1109,7 @@
         // Tambahkan layer control ke peta
         L.control.layers(baseLayers, overlays, {
             position: 'topright',
-            collapsed: false
+            collapsed: true
         }).addTo(map);
 
         // Tambahkan semua overlay default
@@ -834,6 +1117,302 @@
         polylineGroup.addTo(map);
         polygonGroup.addTo(map);
         poiGroup.addTo(map);
+
+        // ===============================
+        //  GPS REAL-TIME SIMULATION
+        // ===============================
+        
+        let gpsMarker = null;
+        let gpsPolyline = null;
+        let gpsPath = [];
+        let gpsInterval = null;
+        let isGPSActive = false;
+        let totalDistance = 0;
+        let startTime = null;
+        let pointsCount = 0;
+        let lastUpdateTime = null;
+        let currentSpeed = 0;
+        let lastPosition = null;
+        
+        const GPS_CENTER_LAT = campusLat;
+        const GPS_CENTER_LNG = campusLng;
+        const GPS_RADIUS = 0.005; // ~500 meter
+        
+        // Generate koordinat random
+        function generateRandomGPSCoordinate() {
+            const angle = Math.random() * 2 * Math.PI;
+            const r = Math.sqrt(Math.random()) * GPS_RADIUS;
+            const lat = GPS_CENTER_LAT + r * Math.cos(angle);
+            const lng = GPS_CENTER_LNG + r * Math.sin(angle);
+            return [lat, lng];
+        }
+        
+        // Update GPS Marker
+        function updateGPSMarker(lat, lng) {
+            if (!gpsMarker) {
+                const gpsIcon = L.divIcon({
+                    className: 'gps-marker',
+                    html: `
+                        <div style="
+                            width: 40px;
+                            height: 40px;
+                            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+                            border: 3px solid white;
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 20px;
+                            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.5);
+                        ">🚗</div>
+                    `,
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 20]
+                });
+                
+                gpsMarker = L.marker([lat, lng], { icon: gpsIcon }).addTo(map);
+                gpsMarker.bindPopup(`
+                    <div style="min-width: 220px;">
+                        <h3 style="margin:0 0 10px 0; color:#2196F3; font-size:16px;">🚗 GPS Tracker</h3>
+                        <p><strong>📍 Koordinat:</strong><br>${lat.toFixed(6)}, ${lng.toFixed(6)}</p>
+                        <p><strong>🚀 Kecepatan:</strong> ${currentSpeed.toFixed(2)} km/h</p>
+                        <p><strong>🎯 Titik:</strong> ${pointsCount}</p>
+                        <p><strong>📏 Jarak:</strong> ${Math.round(totalDistance)} m</p>
+                        <p><strong>🕐 Update:</strong> ${new Date().toLocaleTimeString('id-ID')}</p>
+                    </div>
+                `);
+            } else {
+                gpsMarker.setLatLng([lat, lng]);
+                gpsMarker.getPopup().setContent(`
+                    <div style="min-width: 220px;">
+                        <h3 style="margin:0 0 10px 0; color:#2196F3; font-size:16px;">🚗 GPS Tracker</h3>
+                        <p><strong>📍 Koordinat:</strong><br>${lat.toFixed(6)}, ${lng.toFixed(6)}</p>
+                        <p><strong>🚀 Kecepatan:</strong> ${currentSpeed.toFixed(2)} km/h</p>
+                        <p><strong>🎯 Titik:</strong> ${pointsCount}</p>
+                        <p><strong>📏 Jarak:</strong> ${Math.round(totalDistance)} m</p>
+                        <p><strong>🕐 Update:</strong> ${new Date().toLocaleTimeString('id-ID')}</p>
+                    </div>
+                `);
+            }
+            map.setView([lat, lng], map.getZoom());
+        }
+        
+        // Update polyline
+        function updateGPSPolyline() {
+            if (gpsPath.length < 2) return;
+            
+            if (!gpsPolyline) {
+                gpsPolyline = L.polyline(gpsPath, {
+                    color: '#2196F3',
+                    weight: 4,
+                    opacity: 0.7,
+                    smoothFactor: 1
+                }).addTo(map);
+                
+                gpsPolyline.bindPopup(`
+                    <div style="min-width: 200px;">
+                        <h3 style="margin:0 0 10px 0; color:#2196F3; font-size:16px;">📍 Tracking Path</h3>
+                        <p><strong>Total Titik:</strong> ${gpsPath.length}</p>
+                        <p><strong>Total Jarak:</strong> ${Math.round(totalDistance)} m</p>
+                    </div>
+                `);
+            } else {
+                gpsPolyline.setLatLngs(gpsPath);
+                gpsPolyline.getPopup().setContent(`
+                    <div style="min-width: 200px;">
+                        <h3 style="margin:0 0 10px 0; color:#2196F3; font-size:16px;">📍 Tracking Path</h3>
+                        <p><strong>Total Titik:</strong> ${gpsPath.length}</p>
+                        <p><strong>Total Jarak:</strong> ${Math.round(totalDistance)} m</p>
+                    </div>
+                `);
+            }
+        }
+        
+        // Hitung jarak
+        function calculateDistance(lat1, lng1, lat2, lng2) {
+            const R = 6371000;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLng = (lng2 - lng1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLng/2) * Math.sin(dLng/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+        
+        // Update statistik
+        function updateGPSStats() {
+            document.getElementById('currentPosition').textContent = 
+                gpsPath.length > 0 ? 
+                `${gpsPath[gpsPath.length-1][0].toFixed(6)}, ${gpsPath[gpsPath.length-1][1].toFixed(6)}` : 
+                '-';
+            
+            document.getElementById('currentSpeed').textContent = `${currentSpeed.toFixed(2)} km/h`;
+            document.getElementById('totalDistance').textContent = `${Math.round(totalDistance)} m`;
+            document.getElementById('pointsCount').textContent = pointsCount;
+            document.getElementById('lastUpdate').textContent = 
+                lastUpdateTime ? new Date(lastUpdateTime).toLocaleTimeString('id-ID') : '-';
+            
+            if (startTime) {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                document.getElementById('elapsedTime').textContent = `${elapsed}s`;
+            }
+        }
+        
+        // Simulasi pergerakan GPS
+        function simulateGPSMovement() {
+            const currentTime = Date.now();
+            const [newLat, newLng] = generateRandomGPSCoordinate();
+            
+            if (gpsPath.length > 0) {
+                const lastPos = gpsPath[gpsPath.length - 1];
+                const distance = calculateDistance(lastPos[0], lastPos[1], newLat, newLng);
+                totalDistance += distance;
+                
+                if (lastUpdateTime) {
+                    const timeElapsed = (currentTime - lastUpdateTime) / 1000;
+                    currentSpeed = (distance / timeElapsed) * 3.6; // m/s ke km/h
+                }
+            }
+            
+            lastUpdateTime = currentTime;
+            lastPosition = [newLat, newLng];
+            gpsPath.push([newLat, newLng]);
+            pointsCount++;
+            
+            updateGPSMarker(newLat, newLng);
+            updateGPSPolyline();
+            updateGPSStats();
+        }
+        
+        // Start GPS
+        function startGPSSimulation() {
+            if (isGPSActive) return;
+            
+            isGPSActive = true;
+            startTime = Date.now();
+            
+            document.getElementById('gpsStatus').textContent = 'Aktif';
+            document.getElementById('statusIndicator').classList.remove('status-inactive');
+            document.getElementById('statusIndicator').classList.add('status-active');
+            
+            simulateGPSMovement();
+            gpsInterval = setInterval(simulateGPSMovement, 5000); // Setiap 5 detik
+            
+            console.log('✅ GPS Simulation Started (5 second interval)');
+        }
+        
+        // Stop GPS
+        function stopGPSSimulation() {
+            if (!isGPSActive) return;
+            
+            isGPSActive = false;
+            
+            if (gpsInterval) {
+                clearInterval(gpsInterval);
+                gpsInterval = null;
+            }
+            
+            document.getElementById('gpsStatus').textContent = 'Dihentikan';
+            document.getElementById('statusIndicator').classList.remove('status-active');
+            document.getElementById('statusIndicator').classList.add('status-inactive');
+            
+            console.log('⏸️ GPS Simulation Stopped');
+        }
+        
+        // Reset GPS
+        function resetGPSSimulation() {
+            stopGPSSimulation();
+            
+            if (gpsMarker) {
+                map.removeLayer(gpsMarker);
+                gpsMarker = null;
+            }
+            
+            if (gpsPolyline) {
+                map.removeLayer(gpsPolyline);
+                gpsPolyline = null;
+            }
+            
+            gpsPath = [];
+            totalDistance = 0;
+            pointsCount = 0;
+            startTime = null;
+            lastUpdateTime = null;
+            currentSpeed = 0;
+            lastPosition = null;
+            
+            document.getElementById('gpsStatus').textContent = 'Tidak Aktif';
+            document.getElementById('statusIndicator').classList.remove('status-active');
+            document.getElementById('statusIndicator').classList.add('status-inactive');
+            document.getElementById('currentPosition').textContent = '-';
+            document.getElementById('currentSpeed').textContent = '0 km/h';
+            document.getElementById('totalDistance').textContent = '0 m';
+            document.getElementById('elapsedTime').textContent = '0s';
+            document.getElementById('lastUpdate').textContent = '-';
+            document.getElementById('pointsCount').textContent = '0';
+            
+            map.setView([campusLat, campusLng], 16);
+            
+            console.log('🔄 GPS Simulation Reset');
+        }
+        
+        // Simpan ke Database (LocalStorage)
+        function saveToDatabase() {
+            if (gpsPath.length === 0) {
+                alert('❌ Tidak ada data GPS untuk disimpan!');
+                return;
+            }
+            
+            const gpsData = {
+                timestamp: new Date().toISOString(),
+                totalPoints: pointsCount,
+                totalDistance: Math.round(totalDistance),
+                avgSpeed: (currentSpeed).toFixed(2),
+                duration: startTime ? Math.floor((Date.now() - startTime) / 1000) : 0,
+                path: gpsPath,
+                startLocation: gpsPath[0],
+                endLocation: gpsPath[gpsPath.length - 1]
+            };
+            
+            // Simpan ke LocalStorage
+            let savedSessions = JSON.parse(localStorage.getItem('gpsTracking') || '[]');
+            savedSessions.push(gpsData);
+            localStorage.setItem('gpsTracking', JSON.stringify(savedSessions));
+            
+            console.log('💾 Data GPS tersimpan ke database:', gpsData);
+            alert(`✅ Berhasil menyimpan!\n\n📍 Total Titik: ${pointsCount}\n📏 Jarak: ${Math.round(totalDistance)}m\n⏱️ Durasi: ${gpsData.duration}s\n\nData tersimpan di LocalStorage (${savedSessions.length} sesi)`);
+        }
+        
+        // Toggle GPS Panel (Popup)
+        function toggleGPSPanel() {
+            const panel = document.getElementById('gpsPanel');
+            const backdrop = document.getElementById('gpsBackdrop');
+            
+            panel.classList.toggle('active');
+            backdrop.classList.toggle('active');
+        }
+
+        // Close panel dengan ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const panel = document.getElementById('gpsPanel');
+                const backdrop = document.getElementById('gpsBackdrop');
+                if (panel.classList.contains('active')) {
+                    panel.classList.remove('active');
+                    backdrop.classList.remove('active');
+                }
+            }
+        });
+        
+        // Load data dari database saat page load
+        window.addEventListener('load', function() {
+            const savedSessions = JSON.parse(localStorage.getItem('gpsTracking') || '[]');
+            console.log(`📊 ${savedSessions.length} sesi GPS tersimpan di database`);
+            if (savedSessions.length > 0) {
+                console.log('🗄️ Data terakhir:', savedSessions[savedSessions.length - 1]);
+            }
+        });
     </script>
 </body>
 </html>
