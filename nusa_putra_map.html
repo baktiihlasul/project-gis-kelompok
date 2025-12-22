@@ -457,6 +457,284 @@
         .geoai-zone:hover {
             cursor: pointer;
         }
+
+        /* Chat AI Styling */
+        .chat-ai-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            z-index: 10000;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-ai-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(102, 126, 234, 0.6);
+        }
+
+        .chat-ai-button.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .chat-ai-container {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 380px;
+            height: 550px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .chat-ai-container.active {
+            display: flex;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header h3 {
+            margin: 0;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4CAF50;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 3px;
+        }
+
+        .message {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .message.ai .message-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        }
+
+        .message-bubble {
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 70%;
+            word-wrap: break-word;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .message.ai .message-bubble {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 10px 16px;
+            background: white;
+            border-radius: 18px;
+            border: 1px solid #e0e0e0;
+            width: fit-content;
+        }
+
+        .typing-indicator.active {
+            display: block;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #667eea;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.7; }
+            30% { transform: translateY(-10px); opacity: 1; }
+        }
+
+        .chat-input-container {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: #667eea;
+        }
+
+        .chat-send-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-send-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .chat-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .quick-questions {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e0e0e0;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .quick-question-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            margin-right: 8px;
+            background: white;
+            border: 1px solid #667eea;
+            color: #667eea;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-question-btn:hover {
+            background: #667eea;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -524,8 +802,41 @@
     <!-- GPS Toggle Button -->
     <button class="gps-toggle-btn" onclick="toggleGPSPanel()" title="GPS Simulator">🛰️</button>
 
-    <!-- GPS Toggle Button -->
-    <button class="gps-toggle-btn" onclick="toggleGPSPanel()" title="GPS Simulator">🛰️</button>
+    <!-- Chat AI Button & Container -->
+    <button class="chat-ai-button" onclick="toggleChatAI()" title="Chat AI Assistant" id="chatAIBtn">🤖</button>
+    
+    <div class="chat-ai-container" id="chatAIContainer">
+        <div class="chat-header">
+            <div>
+                <h3>🤖 AI Assistant</h3>
+                <div class="chat-status">
+                    <span class="status-dot"></span>
+                    <span>Online</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quick-questions">
+            <button class="quick-question-btn" onclick="sendQuickQuestion('Kost terdekat')">📍 Kost terdekat?</button>
+            <button class="quick-question-btn" onclick="sendQuickQuestion('Kost termurah')">💰 Kost termurah?</button>
+            <button class="quick-question-btn" onclick="sendQuickQuestion('Kost terbaik')">⭐ Kost terbaik?</button>
+            <button class="quick-question-btn" onclick="sendQuickQuestion('Fasilitas lengkap')">🏠 Fasilitas?</button>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="message ai">
+                <div class="message-avatar">🤖</div>
+                <div class="message-bubble">
+                    Halo! 👋 Saya AI Assistant untuk membantu Anda mencari kost di sekitar Nusa Putra University. Ada yang bisa saya bantu?
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Tanya sesuatu..." onkeypress="handleChatKeyPress(event)">
+            <button class="chat-send-btn" id="chatSendBtn" onclick="sendMessage()">➤</button>
+        </div>
+    </div>
 
     <!-- GPS Modal Backdrop -->
     <div class="gps-modal-backdrop" id="gpsBackdrop" onclick="toggleGPSPanel()"></div>
@@ -1624,6 +1935,238 @@
                 console.log('🗄️ Data terakhir:', savedSessions[savedSessions.length - 1]);
             }
         });
+
+        // ==================== CHAT AI FUNCTIONS ====================
+        
+        // Data kost untuk AI knowledge base
+        let kostDatabase = [];
+
+        // Load kost data untuk AI
+        fetch('kosan_markers.geojson')
+            .then(response => response.json())
+            .then(data => {
+                kostDatabase = data.features.filter(f => f.properties.type === 'kost').map(kost => ({
+                    name: kost.properties.name,
+                    harga: kost.properties.harga,
+                    fasilitas: kost.properties.fasilitas,
+                    jarak: kost.properties.jarak,
+                    desc: kost.properties.desc,
+                    coords: kost.geometry.coordinates,
+                    score: calculateKostScore(kost).score,
+                    category: calculateKostScore(kost).category
+                }));
+                console.log('✅ AI Knowledge Base loaded:', kostDatabase.length + ' kost');
+            });
+
+        function toggleChatAI() {
+            const container = document.getElementById('chatAIContainer');
+            const btn = document.getElementById('chatAIBtn');
+            container.classList.toggle('active');
+            btn.classList.toggle('active');
+            
+            if (container.classList.contains('active')) {
+                document.getElementById('chatInput').focus();
+            }
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendQuickQuestion(question) {
+            document.getElementById('chatInput').value = question;
+            sendMessage();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message
+            addMessage(message, 'user');
+            input.value = '';
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            // Simulate AI thinking time
+            setTimeout(() => {
+                hideTypingIndicator();
+                const aiResponse = generateAIResponse(message);
+                addMessage(aiResponse, 'ai');
+            }, 1000 + Math.random() * 1000);
+        }
+
+        function addMessage(text, type) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = type === 'ai' ? '🤖' : '👤';
+            
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble';
+            bubble.innerHTML = text;
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(bubble);
+            messagesContainer.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const messagesContainer = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message ai';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = `
+                <div class="message-avatar">🤖</div>
+                <div class="typing-indicator active">
+                    <div class="typing-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+            `;
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) indicator.remove();
+        }
+
+        function generateAIResponse(userMessage) {
+            const msg = userMessage.toLowerCase();
+            
+            // AI Pattern Matching & Response Generation
+            
+            // Greeting
+            if (msg.match(/^(hi|halo|hai|hello|hey|selamat)/)) {
+                return '👋 Halo! Saya siap membantu Anda mencari kost yang sesuai. Mau tanya apa?';
+            }
+            
+            // Kost terdekat
+            if (msg.match(/terdekat|dekat|nearest|jarak/)) {
+                const nearest = kostDatabase.sort((a, b) => {
+                    return parseInt(a.jarak) - parseInt(b.jarak);
+                })[0];
+                return `📍 <strong>Kost Terdekat:</strong><br><br>
+                        🏠 <strong>${nearest.name}</strong><br>
+                        📏 Jarak: ${nearest.jarak}<br>
+                        💰 Harga: ${nearest.harga}<br>
+                        ✨ Fasilitas: ${nearest.fasilitas}<br>
+                        🎯 AI Score: ${nearest.score.toFixed(1)}/100<br><br>
+                        <em>Kost ini paling dekat dari kampus!</em>`;
+            }
+            
+            // Kost termurah
+            if (msg.match(/murah|cheap|termurah|hemat|terjangkau/)) {
+                const cheapest = kostDatabase.sort((a, b) => {
+                    return parseInt(a.harga.replace(/[^0-9]/g, '')) - parseInt(b.harga.replace(/[^0-9]/g, ''));
+                })[0];
+                return `💰 <strong>Kost Termurah:</strong><br><br>
+                        🏠 <strong>${cheapest.name}</strong><br>
+                        💵 Harga: ${cheapest.harga}<br>
+                        📏 Jarak: ${cheapest.jarak}<br>
+                        ✨ Fasilitas: ${cheapest.fasilitas}<br>
+                        🎯 AI Score: ${cheapest.score.toFixed(1)}/100<br><br>
+                        <em>Paling hemat untuk budget mahasiswa!</em>`;
+            }
+            
+            // Kost terbaik / rekomendasi
+            if (msg.match(/terbaik|best|bagus|rekomendasi|recommend|optimal/)) {
+                const best = kostDatabase.sort((a, b) => b.score - a.score)[0];
+                return `⭐ <strong>Kost Terbaik (AI Recommendation):</strong><br><br>
+                        🏠 <strong>${best.name}</strong><br>
+                        🎯 AI Score: ${best.score.toFixed(1)}/100 ${best.category === 'optimal' ? '✅' : ''}<br>
+                        💰 Harga: ${best.harga}<br>
+                        📏 Jarak: ${best.jarak}<br>
+                        ✨ Fasilitas: ${best.fasilitas}<br><br>
+                        <em>Rekomendasi terbaik berdasarkan analisis AI!</em>`;
+            }
+            
+            // Fasilitas
+            if (msg.match(/fasilitas|facility|amenity|wifi|ac|parkir|dapur/)) {
+                const withFacilities = kostDatabase.filter(k => k.fasilitas && k.fasilitas.split(',').length >= 3);
+                if (withFacilities.length > 0) {
+                    const best = withFacilities[0];
+                    return `🏠 <strong>Kost dengan Fasilitas Lengkap:</strong><br><br>
+                            ${withFacilities.map(k => `
+                            • <strong>${k.name}</strong><br>
+                            &nbsp;&nbsp;✨ ${k.fasilitas}<br>
+                            &nbsp;&nbsp;💰 ${k.harga}<br>
+                            `).join('<br>')}
+                            <em>Semua sudah dilengkapi fasilitas memadai!</em>`;
+                }
+            }
+            
+            // Harga range
+            if (msg.match(/harga|price|biaya|cost|berapa/)) {
+                const prices = kostDatabase.map(k => parseInt(k.harga.replace(/[^0-9]/g, '')));
+                const min = Math.min(...prices);
+                const max = Math.max(...prices);
+                return `💵 <strong>Range Harga Kost:</strong><br><br>
+                        📊 Rp ${min.toLocaleString()} - Rp ${max.toLocaleString()}/bulan<br><br>
+                        📋 Detail per kost:<br>
+                        ${kostDatabase.map(k => `• ${k.name}: ${k.harga}`).join('<br>')}<br><br>
+                        <em>Pilih sesuai budget Anda!</em>`;
+            }
+            
+            // List semua kost
+            if (msg.match(/list|semua|all|tampilkan|show/)) {
+                return `📋 <strong>Daftar Semua Kost:</strong><br><br>
+                        ${kostDatabase.map((k, i) => `
+                        ${i+1}. <strong>${k.name}</strong><br>
+                        &nbsp;&nbsp;&nbsp;💰 ${k.harga} | 📏 ${k.jarak}<br>
+                        &nbsp;&nbsp;&nbsp;🎯 AI Score: ${k.score.toFixed(1)}/100<br>
+                        `).join('<br>')}
+                        <em>Total ${kostDatabase.length} kost tersedia!</em>`;
+            }
+            
+            // GeoAI explanation
+            if (msg.match(/geoai|ai|ml|machine learning|algoritma|score/)) {
+                return `🤖 <strong>Tentang GeoAI System:</strong><br><br>
+                        Sistem ini menggunakan <strong>K-Means Clustering</strong> dengan weighted scoring:<br><br>
+                        • 📏 Jarak ke kampus (40%)<br>
+                        • 💰 Harga sewa (30%)<br>
+                        • 🏠 Fasilitas (30%)<br><br>
+                        Setiap kost diberi score 0-100 dan dikategorikan:<br>
+                        ✅ Optimal (70+)<br>
+                        ⚡ Potensial (50-69)<br>
+                        ⚠️ Kurang Layak (<50)<br><br>
+                        <em>AI membantu Anda memilih kost terbaik secara objektif!</em>`;
+            }
+            
+            // Help
+            if (msg.match(/help|bantuan|bisa apa/)) {
+                return `💡 <strong>Saya bisa membantu Anda dengan:</strong><br><br>
+                        📍 Cari kost terdekat<br>
+                        💰 Cari kost termurah<br>
+                        ⭐ Rekomendasi kost terbaik<br>
+                        🏠 Info fasilitas lengkap<br>
+                        📊 Perbandingan harga<br>
+                        🤖 Penjelasan AI/GeoAI<br><br>
+                        <em>Tanya apa saja tentang kost!</em>`;
+            }
+            
+            // Default response
+            return `🤔 Hmm, saya belum sepenuhnya memahami pertanyaan Anda.<br><br>
+                    Coba tanya:<br>
+                    • "Kost terdekat dari kampus?"<br>
+                    • "Kost mana yang termurah?"<br>
+                    • "Rekomendasi kost terbaik"<br>
+                    • "Kost dengan fasilitas lengkap"<br><br>
+                    Atau ketik <strong>"help"</strong> untuk bantuan! 😊`;
+        }
     </script>
 </body>
 </html>
