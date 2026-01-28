@@ -5,5 +5,12 @@ Kelompok GIS
 4. Bakti Ihlasul Syawal (20230040206)
 
 
-<img width="2840" height="1539" alt="image" src="https://github.com/user-attachments/assets/c4b94921-483a-4ad8-b5ba-65575d01d94e" />
+<img width="2803" height="747" alt="Screenshot 2025-12-22 141855" src="https://github.com/user-attachments/assets/5cc597bb-84cf-405c-9cd0-42834752f213" />
+
+
+<img width="744" height="1093" alt="Screenshot 2025-12-22 141839" src="https://github.com/user-attachments/assets/b7bc31b0-ab3f-48da-9aaf-c8a41b208506" />
+
+
+<img width="2845" height="1535" alt="Screenshot 2025-12-22 141828" src="https://github.com/user-attachments/assets/94d904ce-dcb5-49b7-b155-d8783c117609" />
+
 
