@@ -2,2170 +2,915 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peta Nusa Putra University & Rekomendasi Kosan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nusa Putra GeoAI Maps</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-search/dist/leaflet-search.min.css" />
-    <script src="https://unpkg.com/leaflet-search/dist/leaflet-search.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #4f46e5; 
+            --primary-hover: #4338ca;
+            --accent-color: #10b981; 
+            --danger-color: #ef4444;
+            --surface-color: rgba(255, 255, 255, 0.95);
+            --surface-blur: blur(12px);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius-lg: 16px;
+            --radius-full: 9999px;
+            --text-main: #1f2937;
+            --text-sub: #6b7280;
+        }
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-            min-height: 100vh;
-            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; 
+            color: var(--text-main);
+            background: #e5e7eb;
         }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-
-        .header {
-            background: #ffffff;
-            color: #333;
-            padding: 30px;
-            text-align: center;
-            border-bottom: 2px solid #e0e0e0;
-        }
-
-        .header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        .header p {
-            font-size: 16px;
-            color: #666;
-        }
-
         #map {
-            height: 650px;
             width: 100%;
+            height: 100vh;
+            z-index: 1;
         }
-
-        .legend {
+        .ui-layer {
             position: absolute;
-            bottom: 30px;
-            right: 10px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            border: 1px solid #ddd;
             z-index: 1000;
-            min-width: 200px;
-        }
-
-        .legend h3 {
-            margin-bottom: 10px;
-            font-size: 14px;
-            color: #333;
-            border-bottom: 2px solid #333;
-            padding-bottom: 5px;
-        }
-
-        .legend-item {
-            margin: 8px 0;
-            display: flex;
-            align-items: center;
-        }
-
-        .legend-icon {
-            width: 25px;
-            height: 25px;
-            margin-right: 10px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            border: 2px solid #ddd;
-            background: #f5f5f5;
-        }
-
-        .legend-line {
-            width: 30px;
-            height: 4px;
-            margin-right: 10px;
-            background: #666;
-        }
-
-        .leaflet-control-search {
-            max-width: 400px;
-        }
-
-        .leaflet-control-search .search-input {
-            width: 300px;
-            padding: 8px 12px;
-            border: 2px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .leaflet-control-search .search-tooltip {
-            max-height: 200px;
-            overflow-y: auto;
-            background: white;
-            border-radius: 4px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            border-radius: 2px;
-        }
-
-        .legend-area {
-            width: 25px;
-            height: 25px;
-            margin-right: 10px;
-            border-radius: 4px;
-            border: 2px solid #666;
-            display: inline-block;
-        }
-
-        .info-panel {
-            padding: 20px;
-            background: #ffffff;
-            border-top: 2px solid #e0e0e0;
-        }
-
-        .info-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 10px;
-        }
-
-        .info-card {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .info-card h4 {
-            color: #333;
-            margin-bottom: 5px;
-            font-size: 14px;
-        }
-
-        .info-card p {
-            color: #666;
-            font-size: 13px;
-        }
-
-        /* Styling untuk Popup */
-        .leaflet-popup-content-wrapper {
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-        }
-
-        .custom-popup .leaflet-popup-content {
-            margin: 15px;
-        }
-
-        /* Styling untuk Tooltip */
-        .leaflet-tooltip {
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 8px 12px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-        }
-
-        .leaflet-tooltip-top:before {
-            border-top-color: #ccc;
-        }
-
-        .leaflet-tooltip-bottom:before {
-            border-bottom-color: #ccc;
-        }
-
-        .leaflet-tooltip-left:before {
-            border-left-color: #ccc;
-        }
-
-        .leaflet-tooltip-right:before {
-            border-right-color: #ccc;
-        }
-
-        /* Popup image styling */
-        .popup-img-container {
-            width: 100%;
-            max-height: 180px;
-            overflow: hidden;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-
-        .popup-image {
-            display: block;
-            width: 100%;
-            height: auto;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        /* POI marker styling */
-        .poi-marker {
-            border-radius: 50%;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            transition: transform 0.2s;
-        }
-
-        .poi-marker:hover {
-            transform: scale(1.1);
-        }
-
-        .loading-text {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            z-index: 1000;
-            font-size: 14px;
-            color: #333;
-        }
-
-        /* GPS Control Panel Modal */
-        .gps-modal-backdrop {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
+            pointer-events: none; 
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 9998;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
         }
-
-        .gps-modal-backdrop.active {
-            display: block;
+        .ui-element {
+            pointer-events: auto;
         }
-
-        .gps-control-panel {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .app-title-card {
+            background: var(--surface-color);
+            backdrop-filter: var(--surface-blur);
+            padding: 16px 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            max-width: 400px;
+            border: 1px solid rgba(255,255,255,0.5);
+            transition: transform 0.3s ease;
+        }
+        .app-title-card:hover {
+            transform: translateY(2px);
+        }
+        .app-title-card h1 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .app-title-card p {
+            font-size: 0.875rem;
+            color: var(--text-sub);
+            margin-top: 4px;
+        }
+        .map-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-end;
+            margin-top: 80px; 
+            pointer-events: none; 
+        }
+        .map-controls > * {
+            pointer-events: auto;
+        }
+        .control-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-full);
+            border: none;
+            background: var(--surface-color);
+            color: var(--text-main);
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: all 0.2s ease;
+        }
+        .control-btn:hover {
             background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-            z-index: 9999;
-            min-width: 350px;
-            max-width: 90%;
-            animation: slideIn 0.3s ease-out;
+            transform: scale(1.05);
+            color: var(--primary-color);
         }
-
-        .gps-control-panel.active {
-            display: block;
+        .control-btn.active {
+            background: var(--primary-color);
+            color: white;
         }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translate(-50%, -60%);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, -50%);
-            }
+        .bottom-area {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 20px;
         }
-
-        /* GeoAI Zone Styling */
-        .geoai-zone {
-            fill-opacity: 0.3;
-            stroke-width: 2;
-            stroke-dasharray: 5, 5;
-            transition: all 0.3s ease;
+        .legend-card {
+            background: var(--surface-color);
+            backdrop-filter: var(--surface-blur);
+            padding: 16px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            max-width: 250px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid rgba(255,255,255,0.5);
+            font-size: 0.85rem;
         }
-
-        .geoai-zone:hover {
-            fill-opacity: 0.5;
-            stroke-width: 3;
+        .legend-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
         }
-
-        .zone-high {
-            fill: #4CAF50;
-            stroke: #2E7D32;
+        .legend-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: max-height 0.3s ease;
         }
-
-        .zone-medium {
-            fill: #FFC107;
-            stroke: #F57C00;
+        .legend-content.collapsed {
+            display: none;
         }
-
-        .zone-low {
-            fill: #F44336;
-            stroke: #C62828;
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-main);
         }
-
-        .gps-toggle-btn {
-            position: absolute;
-            top: 80px;
-            left: 10px;
-            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+        .legend-icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            flex-shrink: 0;
+        }
+        .zone-optimal { background: rgba(76, 175, 80, 0.2); border: 2px dashed #4CAF50; }
+        .zone-potential { background: rgba(255, 193, 7, 0.2); border: 2px dashed #FFC107; }
+        .zone-low { background: rgba(244, 67, 54, 0.2); border: 2px dashed #F44336; }
+        .chat-fab {
+            width: 64px;
+            height: 64px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, var(--primary-color), #818cf8);
             color: white;
             border: none;
-            padding: 12px 16px;
-            border-radius: 50%;
+            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
             cursor: pointer;
-            font-size: 20px;
-            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
-            z-index: 1000;
-            transition: all 0.3s;
-        }
-
-        .gps-toggle-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.6);
-        }
-
-        .gps-control-panel h3 {
-            margin: 0 0 15px 0;
-            color: #333;
-            font-size: 18px;
-            border-bottom: 2px solid #4CAF50;
-            padding-bottom: 8px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
         }
-
-        .gps-close-btn {
+        .chat-fab:hover {
+            transform: scale(1.1) rotate(-5deg);
+            box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.5);
+        }
+        .chat-fab::after {
+            content: '';
             position: absolute;
             top: -5px;
             right: -5px;
-            background: #f44336;
-            color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
+            width: 16px;
+            height: 16px;
+            background: #22c55e;
+            border: 3px solid white;
             border-radius: 50%;
-            cursor: pointer;
-            font-size: 16px;
-            line-height: 1;
-            transition: all 0.3s;
         }
-
-        .gps-close-btn:hover {
-            background: #da190b;
-            transform: rotate(90deg);
-        }
-
-        .gps-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            margin: 5px;
-            transition: all 0.3s;
-            font-weight: bold;
-        }
-
-        .gps-btn-start {
-            background: #4CAF50;
-            color: white;
-        }
-
-        .gps-btn-start:hover {
-            background: #45a049;
-        }
-
-        .gps-btn-stop {
-            background: #f44336;
-            color: white;
-        }
-
-        .gps-btn-stop:hover {
-            background: #da190b;
-        }
-
-        .gps-btn-reset {
-            background: #FF9800;
-            color: white;
-        }
-
-        .gps-btn-reset:hover {
-            background: #e68900;
-        }
-
-        .gps-btn-save {
-            background: #2196F3;
-            color: white;
-        }
-
-        .gps-btn-save:hover {
-            background: #0b7dda;
-        }
-
-        .gps-stats {
-            margin-top: 15px;
-            padding: 12px;
-            background: #f5f5f5;
-            border-radius: 5px;
-            font-size: 13px;
-        }
-
-        .gps-stats p {
-            margin: 6px 0;
-            color: #333;
-        }
-
-        .status-indicator {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 5px;
-        }
-
-        .status-active {
-            background: #4CAF50;
-            box-shadow: 0 0 10px #4CAF50;
-            animation: pulse-gps 2s infinite;
-        }
-
-        .status-inactive {
-            background: #999;
-        }
-
-        @keyframes pulse-gps {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* GeoAI Zone Styling */
-        .geoai-zone {
-            transition: all 0.3s ease;
-        }
-
-        .geoai-zone:hover {
-            cursor: pointer;
-        }
-
-        /* Chat AI Styling */
-        .chat-ai-button {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
-            z-index: 10000;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .chat-ai-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 30px rgba(102, 126, 234, 0.6);
-        }
-
-        .chat-ai-button.active {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        .chat-ai-container {
+        .chat-overlay {
             position: fixed;
             bottom: 100px;
-            right: 30px;
+            right: 20px;
             width: 380px;
-            height: 550px;
+            height: 600px;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
-            z-index: 9999;
-            display: none;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            z-index: 2000;
+            display: flex;
             flex-direction: column;
             overflow: hidden;
-            animation: slideUp 0.3s ease-out;
+            transform-origin: bottom right;
+            transform: scale(0) translate(20px, 20px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(0,0,0,0.05);
         }
-
-        .chat-ai-container.active {
-            display: flex;
+        .chat-overlay.active {
+            transform: scale(1) translate(0, 0);
+            opacity: 1;
         }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
         .chat-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--primary-color), #6366f1);
             padding: 20px;
+            color: white;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-
-        .chat-header h3 {
-            margin: 0;
-            font-size: 18px;
+        .chat-title h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .chat-title span {
+            font-size: 0.8rem;
+            opacity: 0.9;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 4px;
         }
-
-        .chat-status {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 12px;
+        .chat-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
         }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #4CAF50;
-            animation: pulse-dot 2s infinite;
-        }
-
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .chat-messages {
+        .chat-close:hover { opacity: 1; }
+        .chat-body {
             flex: 1;
+            background: #f9fafb;
             padding: 20px;
             overflow-y: auto;
-            background: #f8f9fa;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 16px;
         }
-
-        .chat-messages::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .chat-messages::-webkit-scrollbar-thumb {
-            background: #667eea;
-            border-radius: 3px;
-        }
-
         .message {
+            max-width: 80%;
             display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            animation: fadeIn 0.3s ease-out;
+            gap: 8px;
+            animation: fadeIn 0.3s ease;
         }
-
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+        .msg-bubble {
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .message.ai .msg-bubble {
+            background: white;
+            color: var(--text-main);
+            border-bottom-left-radius: 4px;
+        }
+        .message.user .msg-bubble {
+            background: var(--primary-color);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-footer {
+            padding: 16px;
+            background: white;
+            border-top: 1px solid #f3f4f6;
+        }
+        .quick-actions {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            scrollbar-width: none;
+        }
+        .chip {
+            padding: 6px 12px;
+            background: #eff6ff;
+            color: var(--primary-color);
+            border: 1px solid #bfdbfe;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .chip:hover { background: #dbeafe; }
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 24px;
+            outline: none;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        .chat-input:focus { border-color: var(--primary-color); }
+        .send-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+        .send-btn:hover { transform: scale(1.1); }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        .message.user {
-            flex-direction: row-reverse;
+        .modern-popup .leaflet-popup-content-wrapper {
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            padding: 0;
+            overflow: hidden;
         }
-
-        .message-avatar {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            flex-shrink: 0;
+        .modern-popup .leaflet-popup-content {
+            margin: 0;
+            width: 280px !important;
         }
-
-        .message.ai .message-avatar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .popup-hero {
+            height: 120px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
         }
-
-        .message.user .message-avatar {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        .popup-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
         }
-
-        .message-bubble {
-            padding: 12px 16px;
-            border-radius: 18px;
-            max-width: 70%;
-            word-wrap: break-word;
-            line-height: 1.5;
-            font-size: 14px;
-        }
-
-        .message.ai .message-bubble {
-            background: white;
-            color: #333;
-            border: 1px solid #e0e0e0;
-        }
-
-        .message.user .message-bubble {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .popup-title {
+            position: absolute;
+            bottom: 12px;
+            left: 16px;
             color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            z-index: 1;
         }
-
-        .typing-indicator {
-            display: none;
-            padding: 10px 16px;
-            background: white;
-            border-radius: 18px;
-            border: 1px solid #e0e0e0;
-            width: fit-content;
+        .popup-body {
+            padding: 16px;
         }
-
-        .typing-indicator.active {
-            display: block;
-        }
-
-        .typing-dots {
-            display: flex;
-            gap: 4px;
-        }
-
-        .typing-dots span {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #667eea;
-            animation: typing 1.4s infinite;
-        }
-
-        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-
-        @keyframes typing {
-            0%, 60%, 100% { transform: translateY(0); opacity: 0.7; }
-            30% { transform: translateY(-10px); opacity: 1; }
-        }
-
-        .chat-input-container {
-            padding: 15px;
-            background: white;
-            border-top: 1px solid #e0e0e0;
-            display: flex;
-            gap: 10px;
-        }
-
-        .chat-input {
-            flex: 1;
-            padding: 12px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 25px;
-            font-size: 14px;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .chat-input:focus {
-            border-color: #667eea;
-        }
-
-        .chat-send-btn {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .chat-send-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .chat-send-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .quick-questions {
-            padding: 10px 20px;
-            background: #f8f9fa;
-            border-top: 1px solid #e0e0e0;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-
-        .quick-question-btn {
+        .popup-tag {
             display: inline-block;
-            padding: 8px 15px;
-            margin-right: 8px;
-            background: white;
-            border: 1px solid #667eea;
-            color: #667eea;
-            border-radius: 20px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 8px;
         }
-
-        .quick-question-btn:hover {
-            background: #667eea;
+        .tag-success { background: #dcfce7; color: #166534; }
+        .tag-warning { background: #fef3c7; color: #92400e; }
+        .popup-info-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            color: var(--text-sub);
+            font-size: 0.9rem;
+        }
+        .popup-info-row i { width: 16px; text-align: center; }
+        .popup-score {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f3f4f6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .score-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary-color);
             color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        .marker-icon-wrapper {
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+        .marker-icon-wrapper:hover {
+            transform: scale(1.15) translateY(-2px);
+            z-index: 1000 !important;
+        }
+        @media (max-width: 768px) {
+            .app-title-card {
+                margin-left: 0;
+                max-width: 100%;
+                border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+            }
+            .bottom-area {
+                flex-direction: column-reverse;
+                align-items: flex-end;
+            }
+            .legend-card {
+                width: 100%;
+                max-width: 100%;
+                display: none; 
+            }
+            .legend-card.active {
+                display: block;
+            }
+            .chat-overlay {
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                width: 100%;
+                height: 100%;
+                border-radius: 0;
+                z-index: 3000;
+            }
+        }
+        .leaflet-control-search {
+            position: fixed !important;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000 !important;
+            margin: 0 !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+        .leaflet-control-search .search-input {
+            width: 320px;
+            height: 48px;
+            padding: 0 20px 0 45px !important;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.8);
+            background: var(--surface-color);
+            backdrop-filter: var(--surface-blur);
+            box-shadow: var(--shadow-lg);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' /%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 15px center;
+            background-size: 20px;
+        }
+        .leaflet-control-search .search-input:focus {
+            width: 400px;
+            background-color: white;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: var(--primary-color);
+        }
+        .leaflet-control-search .search-tooltip {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            margin-top: 12px;
+            border: 1px solid #f3f4f6;
+            overflow: hidden;
+            max-height: 300px;
+            animation: fadeIn 0.2s ease;
+            width: 100% !important;
+            padding: 8px 0;
+        }
+        .leaflet-control-search .search-tip {
+            margin: 0;
+            padding: 12px 20px;
+            border-radius: 0;
+            border-bottom: 1px solid #f9fafb;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+        .leaflet-control-search .search-tip:hover,
+        .leaflet-control-search .search-tip-select {
+            background-color: #eff6ff;
+            color: var(--primary-color);
+        }
+        .leaflet-control-search .search-button {
+            display: none !important;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🗺️ Peta Nusa Putra University & Rekomendasi Kosan</h1>
-            <p>Universitas Nusa Putra - Kampus Sukabumi</p>
-        </div>
-
-        <div id="map"></div>
-
-        <div class="info-panel">
-            <h3 style="color: #333; margin-bottom: 15px;">ℹ️ Informasi Peta</h3>
-            <div class="info-row">
-                <div class="info-card">
-                    <h4>📍 Koordinat Kampus</h4>
-                    <p>-6.905182345406646, 106.87344808094224</p>
-                </div>
-                <div class="info-card">
-                    <h4>🎓 Total Rekomendasi</h4>
-                    <p>5 Kost Terdekat dari Kampus</p>
-                </div>
-                <div class="info-card">
-                    <h4>📏 Jarak Terdekat</h4>
-                    <p>350 meter (Kost Sriwijaya)</p>
-                </div>
-                <div class="info-card">
-                    <h4>💰 Harga Terjangkau</h4>
-                    <p>Rp 450.000 - Rp 1.000.000/bulan</p>
-                </div>
+    <div id="map"></div>
+    <div class="ui-layer">
+        <div class="top-bar">
+            <div class="app-title-card ui-element">
+                <h1><i class="fa-solid fa-map-location-dot" style="color: var(--primary-color);"></i> Nusa Putra Maps</h1>
+                <p>Intelligent GeoAI Campus & Kost Finder</p>
+            </div>
+            <div class="map-controls">
+                <button class="control-btn ui-element" onclick="locateUser()" title="Lokasi Saya">
+                    <i class="fa-solid fa-location-crosshairs"></i>
+                </button>
+                <button class="control-btn ui-element" onclick="resetView()" title="Reset View">
+                    <i class="fa-solid fa-house"></i>
+                </button>
+                <button class="control-btn ui-element" onclick="toggleLayerMenu()" title="Layer">
+                    <i class="fa-solid fa-layer-group"></i>
+                </button>
             </div>
         </div>
-
-        <!-- GeoAI Explanation Section -->
-        <div class="info-panel" style="border-top: 3px solid #4CAF50; background: linear-gradient(135deg, #E8F5E9 0%, #ffffff 100%);">
-            <h3 style="color: #2E7D32; margin-bottom: 15px; display: flex; align-items: center;">
-                <span style="font-size: 24px; margin-right: 10px;">🤖</span>
-                Implementasi GeoAI - Prediksi Zona Kost Optimal
-            </h3>
-            <div class="info-row">
-                <div class="info-card" style="border-left: 4px solid #4CAF50;">
-                    <h4>🎯 Masalah yang Diselesaikan</h4>
-                    <p>Membantu mahasiswa menemukan lokasi kost terbaik berdasarkan analisis multi-kriteria (jarak, harga, fasilitas) menggunakan Machine Learning</p>
+        <div class="bottom-area">
+            <div class="legend-card ui-element">
+                <div class="legend-title" onclick="toggleLegend()">
+                    <span><i class="fa-solid fa-list"></i> Keterangan Peta</span>
+                    <i class="fa-solid fa-chevron-down"></i>
                 </div>
-                <div class="info-card" style="border-left: 4px solid #2196F3;">
-                    <h4>📊 Data yang Digunakan</h4>
-                    <p>Data kost (5 titik), koordinat GPS, harga sewa, jarak ke kampus, dan ketersediaan fasilitas (WiFi, AC, parkir, dapur)</p>
-                </div>
-                <div class="info-card" style="border-left: 4px solid #FF9800;">
-                    <h4>🧠 Jenis AI yang Digunakan</h4>
-                    <p>Clustering & Prediksi menggunakan K-Means dengan scoring berbasis jarak (40%), harga (30%), dan fasilitas (30%)</p>
-                </div>
-                <div class="info-card" style="border-left: 4px solid #9C27B0;">
-                    <h4>🗺️ Makna Layer GeoAI</h4>
-                    <p><strong style="color: #4CAF50;">Hijau:</strong> Zona optimal (dekat, murah, fasilitas lengkap) | <strong style="color: #FFC107;">Kuning:</strong> Zona potensial | <strong style="color: #F44336;">Merah:</strong> Kurang layak</p>
-                </div>
-                <div class="info-card" style="border-left: 4px solid #00BCD4;">
-                    <h4>✨ Manfaat untuk User</h4>
-                    <p>Visualisasi zona rekomendasi secara real-time, pengambilan keputusan lebih cepat, dan efisiensi waktu pencarian kost hingga 70%</p>
+                <div class="legend-content" id="legendContent">
+                    <div class="legend-item">
+                        <div class="legend-icon" style="background: white; border: 2px solid #333; color: #333;">🎓</div>
+                        <span>Kampus Utama</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-icon" style="background: white; border: 2px solid #666;">🏠</div>
+                        <span>Kosan Mahasiswa</span>
+                    </div>
+                    <div class="legend-item" style="font-size: 0.8rem; margin-top: 8px; font-weight: 600;">GeoAI Predictions:</div>
+                    <div class="legend-item">
+                        <div class="legend-icon zone-optimal"></div>
+                        <span>Optimal (Score > 70)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-icon zone-potential"></div>
+                        <span>Potensial (Score 50-70)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-icon zone-low"></div>
+                        <span>Kurang Layak (Score < 50)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-icon" style="background: var(--primary-color); border-radius: 50%;"></div>
+                        <span>Lokasi Anda</span>
+                    </div>
                 </div>
             </div>
+            <button class="chat-fab ui-element" onclick="toggleChat()" title="AI Assistant">
+                <i class="fa-solid fa-robot"></i>
+            </button>
         </div>
     </div>
-
-    <!-- GPS Toggle Button -->
-    <button class="gps-toggle-btn" onclick="toggleGPSPanel()" title="GPS Simulator">🛰️</button>
-
-    <!-- Chat AI Button & Container -->
-    <button class="chat-ai-button" onclick="toggleChatAI()" title="Chat AI Assistant" id="chatAIBtn">🤖</button>
-    
-    <div class="chat-ai-container" id="chatAIContainer">
+    <div class="chat-overlay" id="chatOverlay">
         <div class="chat-header">
-            <div>
-                <h3>🤖 AI Assistant</h3>
-                <div class="chat-status">
-                    <span class="status-dot"></span>
-                    <span>Online</span>
-                </div>
+            <div class="chat-title">
+                <h3>Nusa Putra AI</h3>
+                <span><i class="fa-solid fa-circle" style="color: #4ade80; font-size: 8px;"></i> Online Assistant</span>
             </div>
+            <button class="chat-close" onclick="toggleChat()"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        
-        <div class="quick-questions">
-            <button class="quick-question-btn" onclick="sendQuickQuestion('Kost terdekat')">📍 Kost terdekat?</button>
-            <button class="quick-question-btn" onclick="sendQuickQuestion('Kost termurah')">💰 Kost termurah?</button>
-            <button class="quick-question-btn" onclick="sendQuickQuestion('Kost terbaik')">⭐ Kost terbaik?</button>
-            <button class="quick-question-btn" onclick="sendQuickQuestion('Fasilitas lengkap')">🏠 Fasilitas?</button>
-        </div>
-        
-        <div class="chat-messages" id="chatMessages">
+        <div class="chat-body" id="chatBody">
             <div class="message ai">
-                <div class="message-avatar">🤖</div>
-                <div class="message-bubble">
+                <div class="msg-bubble">
                     Halo! 👋 Saya AI Assistant untuk membantu Anda mencari kost di sekitar Nusa Putra University. Ada yang bisa saya bantu?
                 </div>
             </div>
         </div>
-        
-        <div class="chat-input-container">
-            <input type="text" class="chat-input" id="chatInput" placeholder="Tanya sesuatu..." onkeypress="handleChatKeyPress(event)">
-            <button class="chat-send-btn" id="chatSendBtn" onclick="sendMessage()">➤</button>
+        <div class="chat-footer">
+            <div class="quick-actions">
+                <button class="chip" onclick="sendQuickMsg('Kost terdekat')">📍 Terdekat</button>
+                <button class="chip" onclick="sendQuickMsg('Kost termurah')">💰 Termurah</button>
+                <button class="chip" onclick="sendQuickMsg('Rekomendasi terbaik')">⭐ Terbaik</button>
+                <button class="chip" onclick="sendQuickMsg('Info GeoAI')">🤖 GeoAI?</button>
+            </div>
+            <div class="input-area">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Ketik pesan..." onkeypress="handleEnter(event)">
+                <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
         </div>
     </div>
-
-    <!-- GPS Modal Backdrop -->
-    <div class="gps-modal-backdrop" id="gpsBackdrop" onclick="toggleGPSPanel()"></div>
-
-    <div class="legend">
-        <h3>🎨 Keterangan</h3>
-        <div class="legend-item">
-            <div class="legend-icon">🎓</div>
-            <span style="font-size: 13px;">Kampus Nusa Putra</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-icon">🏠</div>
-            <span style="font-size: 13px;">Kosan Terdekat</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-line"></div>
-            <span style="font-size: 13px;">Rute ke Kosan</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-area" style="background-color: rgba(0,0,0,0.1);"></div>
-            <span style="font-size: 13px;">Area Kampus</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-area" style="background-color: rgba(0,0,0,0.1); border-style: dashed;"></div>
-            <span style="font-size: 13px;">Zona Kosan</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-icon" style="background: #4CAF50;">🏪</div>
-            <span style="font-size: 13px;">POI Sekitar (OSM)</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-icon" style="background: #2196F3;">🚗</div>
-            <span style="font-size: 13px;">GPS Real-time</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-area" style="background-color: rgba(76, 175, 80, 0.3); border: 2px dashed #2E7D32;"></div>
-            <span style="font-size: 13px;">🤖 Zona Optimal (GeoAI)</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-area" style="background-color: rgba(255, 193, 7, 0.3); border: 2px dashed #F57C00;"></div>
-            <span style="font-size: 13px;">⚡ Zona Potensial</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-area" style="background-color: rgba(244, 67, 54, 0.3); border: 2px dashed #C62828;"></div>
-            <span style="font-size: 13px;">⚠️ Zona Kurang Layak</span>
-        </div>
-    </div>
-
-    <!-- GPS Control Panel -->
-    <div class="gps-control-panel" id="gpsPanel">
-        <h3>🛰️ GPS Real-time Simulator
-            <button class="gps-close-btn" onclick="toggleGPSPanel()" title="Close">×</button>
-        </h3>
-        <div style="text-align: center;">
-            <button class="gps-btn gps-btn-start" onclick="startGPSSimulation()">▶️ Start</button>
-            <button class="gps-btn gps-btn-stop" onclick="stopGPSSimulation()">⏸️ Stop</button>
-            <button class="gps-btn gps-btn-reset" onclick="resetGPSSimulation()">🔄 Reset</button>
-            <button class="gps-btn gps-btn-save" onclick="saveToDatabase()">💾 Save</button>
-        </div>
-        <div class="gps-stats">
-            <p><span class="status-indicator status-inactive" id="statusIndicator"></span><strong>Status:</strong> <span id="gpsStatus">Tidak Aktif</span></p>
-            <p><strong>📍 Posisi:</strong> <span id="currentPosition">-</span></p>
-            <p><strong>🚀 Kecepatan:</strong> <span id="currentSpeed">0 km/h</span></p>
-            <p><strong>📏 Total Jarak:</strong> <span id="totalDistance">0 m</span></p>
-            <p><strong>⏱️ Waktu:</strong> <span id="elapsedTime">0s</span></p>
-            <p><strong>🕐 Timestamp:</strong> <span id="lastUpdate">-</span></p>
-            <p><strong>🎯 Titik:</strong> <span id="pointsCount">0</span></p>
-        </div>
-    </div>
-
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-search/dist/leaflet-search.min.js"></script>
     <script>
-        // Inisialisasi peta dengan koordinat Nusa Putra University
-        var map = L.map('map').setView([-6.905182345406646, 106.87344808094224], 16);
-
-        // Base Layers
-        var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        });
-
-        var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: '© Esri'
-        });
-
-        // Tambahkan base layer default
-        osmLayer.addTo(map);
-
-        // Inisialisasi overlay groups
-        var markerGroup = L.layerGroup();
-        var polylineGroup = L.layerGroup();
-        var polygonGroup = L.layerGroup();
-        var poiGroup = L.layerGroup();
-        var geoaiZoneGroup = L.layerGroup(); // GeoAI Layer Group
-
-        // ==================== GeoAI: PREDIKSI ZONA KOST OPTIMAL ====================
-        // Machine Learning: K-Means Clustering dengan Scoring Multi-kriteria
-        
-        function calculateDistance(lat1, lng1, lat2, lng2) {
-            const R = 6371000; // Radius bumi dalam meter
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLng = (lng2 - lng1) * Math.PI / 180;
-            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                      Math.sin(dLng/2) * Math.sin(dLng/2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            return R * c;
-        }
-
-        function extractPrice(priceStr) {
-            if (!priceStr) return 0;
-            return parseInt(priceStr.replace(/[^0-9]/g, ''));
-        }
-
-        function countFacilities(fasilitasStr) {
-            if (!fasilitasStr) return 0;
-            return fasilitasStr.split(',').length;
-        }
-
-        function calculateKostScore(kost) {
-            // Skor berdasarkan 3 kriteria utama:
-            // 1. Jarak ke kampus (40%)
-            // 2. Harga (30%)
-            // 3. Fasilitas (30%)
-            
-            const coords = kost.geometry.coordinates;
-            const distance = calculateDistance(campusLat, campusLng, coords[1], coords[0]);
-            const price = extractPrice(kost.properties.harga);
-            const facilities = countFacilities(kost.properties.fasilitas);
-            
-            // Normalisasi (semakin kecil semakin baik untuk jarak & harga)
-            const distanceScore = Math.max(0, 100 - (distance / 10)); // Max 1000m
-            const priceScore = Math.max(0, 100 - (price / 10000)); // Max 1jt
-            const facilityScore = facilities * 20; // Max 5 fasilitas = 100
-            
-            // Weighted scoring
-            const totalScore = (distanceScore * 0.4) + (priceScore * 0.3) + (facilityScore * 0.3);
-            
-            return {
-                score: totalScore,
-                distance: distance,
-                price: price,
-                facilities: facilities,
-                category: totalScore >= 70 ? 'optimal' : totalScore >= 50 ? 'potensial' : 'kurang_layak'
-            };
-        }
-
-        // Membuat zona prediksi dengan buffer radius
-        function createPredictionZones() {
-            fetch('kosan_markers.geojson')
-                .then(response => response.json())
-                .then(data => {
-                    const kostData = data.features.filter(f => f.properties.type === 'kost');
-                    
-                    kostData.forEach(kost => {
-                        const analysis = calculateKostScore(kost);
-                        const coords = kost.geometry.coordinates;
-                        
-                        // Tentukan warna zona berdasarkan kategori AI
-                        let zoneColor, zoneClass, zoneLabel;
-                        if (analysis.category === 'optimal') {
-                            zoneColor = '#4CAF50';
-                            zoneClass = 'zone-high';
-                            zoneLabel = '✅ Zona Optimal';
-                        } else if (analysis.category === 'potensial') {
-                            zoneColor = '#FFC107';
-                            zoneClass = 'zone-medium';
-                            zoneLabel = '⚡ Zona Potensial';
-                        } else {
-                            zoneColor = '#F44336';
-                            zoneClass = 'zone-low';
-                            zoneLabel = '⚠️ Zona Kurang Layak';
-                        }
-                        
-                        // Buat zona circular buffer (150m radius)
-                        const zone = L.circle([coords[1], coords[0]], {
-                            radius: 150,
-                            color: zoneColor,
-                            fillColor: zoneColor,
-                            fillOpacity: 0.25,
-                            weight: 2,
-                            dashArray: '5, 5',
-                            className: 'geoai-zone ' + zoneClass
-                        }).addTo(geoaiZoneGroup);
-                        
-                        // Popup info AI Prediction
-                        const popupContent = `
-                            <div style="min-width: 200px;">
-                                <h4 style="margin: 0 0 10px 0; color: ${zoneColor}; border-bottom: 2px solid ${zoneColor}; padding-bottom: 5px;">
-                                    🤖 ${zoneLabel}
-                                </h4>
-                                <p style="margin: 5px 0;"><strong>📍 Lokasi:</strong> ${kost.properties.name}</p>
-                                <p style="margin: 5px 0;"><strong>🎯 AI Score:</strong> ${analysis.score.toFixed(1)}/100</p>
-                                <hr style="margin: 8px 0; border: none; border-top: 1px solid #ddd;">
-                                <p style="margin: 5px 0; font-size: 12px;"><strong>📏 Jarak:</strong> ${Math.round(analysis.distance)}m</p>
-                                <p style="margin: 5px 0; font-size: 12px;"><strong>💰 Harga:</strong> Rp ${analysis.price.toLocaleString()}</p>
-                                <p style="margin: 5px 0; font-size: 12px;"><strong>🏠 Fasilitas:</strong> ${analysis.facilities} items</p>
-                                <p style="margin: 8px 0 0 0; padding: 8px; background: #f5f5f5; border-radius: 5px; font-size: 11px;">
-                                    <strong>💡 ML Model:</strong> K-Means Clustering<br>
-                                    <strong>⚙️ Bobot:</strong> Jarak (40%), Harga (30%), Fasilitas (30%)
-                                </p>
-                            </div>
-                        `;
-                        
-                        zone.bindPopup(popupContent);
-                        
-                        // Tooltip saat hover
-                        zone.bindTooltip(`${zoneLabel}<br>Score: ${analysis.score.toFixed(1)}`, {
-                            permanent: false,
-                            direction: 'top'
-                        });
-                        
-                        console.log(`🤖 GeoAI Analysis - ${kost.properties.name}:`, analysis);
-                    });
-                    
-                    console.log('✅ GeoAI Prediction Zones Created Successfully!');
-                })
-                .catch(error => console.error('❌ Error loading GeoAI data:', error));
-        }
-
-        // Jalankan analisis GeoAI saat halaman dimuat
-        createPredictionZones();
-        geoaiZoneGroup.addTo(map); // Tambahkan GeoAI layer ke peta
-
-        // Koordinat kampus Nusa Putra
         const campusLat = -6.905182345406646;
         const campusLng = 106.87344808094224;
-
-        // Fungsi untuk mendapatkan icon berdasarkan tipe POI
-        function getPOIIcon(type, amenity) {
-            const iconMap = {
-                // Residential & Accommodation
-                'residential': { icon: '🏘️', color: '#FF6B9D', bg: '#FFE5F0' },
-                'guest_house': { icon: '🏡', color: '#FF1744', bg: '#FFE5EA' },
-                'hostel': { icon: '🏨', color: '#D32F2F', bg: '#FFEBEE' },
-                // Food & Drink
-                'restaurant': { icon: '🍽️', color: '#FF6B6B', bg: '#FFE5E5' },
-                'cafe': { icon: '☕', color: '#8B4513', bg: '#F5E6D3' },
-                'fast_food': { icon: '🍔', color: '#FFA500', bg: '#FFF3E0' },
-                // Finance
-                'bank': { icon: '🏦', color: '#2196F3', bg: '#E3F2FD' },
-                'atm': { icon: '💳', color: '#1976D2', bg: '#BBDEFB' },
-                // Health
-                'hospital': { icon: '🏥', color: '#F44336', bg: '#FFEBEE' },
-                'clinic': { icon: '⚕️', color: '#E91E63', bg: '#FCE4EC' },
-                'pharmacy': { icon: '💊', color: '#9C27B0', bg: '#F3E5F5' },
-                // Education
-                'school': { icon: '🏫', color: '#4CAF50', bg: '#E8F5E9' },
-                'university': { icon: '🎓', color: '#009688', bg: '#E0F2F1' },
-                'library': { icon: '📚', color: '#795548', bg: '#EFEBE9' },
-                // Shopping
-                'convenience': { icon: '🏪', color: '#FF9800', bg: '#FFF3E0' },
-                'supermarket': { icon: '🛒', color: '#FF5722', bg: '#FBE9E7' },
-                'mall': { icon: '🏬', color: '#E91E63', bg: '#FCE4EC' },
-                // Transportation & Utilities
-                'fuel': { icon: '⛽', color: '#607D8B', bg: '#ECEFF1' },
-                'parking': { icon: '🅿️', color: '#9E9E9E', bg: '#F5F5F5' },
-                // Religion
-                'place_of_worship': { icon: '🕌', color: '#00BCD4', bg: '#E0F7FA' },
-                'mosque': { icon: '🕌', color: '#00BCD4', bg: '#E0F7FA' },
-                'church': { icon: '⛪', color: '#00BCD4', bg: '#E0F7FA' },
-                // Government
-                'post_office': { icon: '📮', color: '#FF9800', bg: '#FFF3E0' },
-                'police': { icon: '👮', color: '#3F51B5', bg: '#E8EAF6' },
-                'fire_station': { icon: '🚒', color: '#F44336', bg: '#FFEBEE' }
-            };
-            
-            return iconMap[amenity] || iconMap[type] || { icon: '📍', color: '#9E9E9E', bg: '#F5F5F5' };
-        }
-
-        // Fungsi untuk memuat data dari Nominatim API (Reverse Geocoding)
-        async function loadNominatimData() {
-            try {
-                const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${campusLat}&lon=${campusLng}&zoom=18&addressdetails=1`;
-                
-                const response = await fetch(nominatimUrl, {
-                    headers: {
-                        'User-Agent': 'Nusa-Putra-University-Map/1.0'
-                    }
-                });
-                
-                if (!response.ok) throw new Error('Gagal mengambil data Nominatim');
-                
-                const data = await response.json();
-                
-                console.log('📍 Informasi Lokasi dari Nominatim:', data);
-                console.log('📍 Alamat:', data.display_name);
-                
-                // Buat marker info lokasi
-                const infoIcon = L.divIcon({
-                    className: 'poi-marker',
-                    html: `<div style='
-                        width: 40px; 
-                        height: 40px; 
-                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                        border: 3px solid white;
-                        border-radius: 50%;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        font-size: 20px;
-                        box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-                    '>ℹ️</div>`,
-                    iconSize: [40, 40],
-                    iconAnchor: [20, 20]
-                });
-                
-                const marker = L.marker([campusLat, campusLng], { icon: infoIcon });
-                
-                const popupContent = `
-                    <div style="min-width: 280px; max-width: 350px;">
-                        <h3 style="margin:0 0 12px 0; color:#667eea; font-size:18px; border-bottom:3px solid #667eea; padding-bottom:8px;">
-                            ℹ️ Informasi Lokasi (Nominatim)
-                        </h3>
-                        <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 10px;">
-                            <p style="margin: 6px 0; font-size: 13px; line-height: 1.6;">
-                                <strong style="color: #333;">📍 Alamat Lengkap:</strong><br>
-                                <span style="color: #555;">${data.display_name}</span>
-                            </p>
-                            ${data.address ? `
-                                <p style="margin: 6px 0; font-size: 13px; line-height: 1.6;">
-                                    <strong style="color: #333;">🏙️ Kota:</strong> <span style="color: #555;">${data.address.city || data.address.town || data.address.village || '-'}</span>
-                                </p>
-                                <p style="margin: 6px 0; font-size: 13px; line-height: 1.6;">
-                                    <strong style="color: #333;">📮 Kode Pos:</strong> <span style="color: #555;">${data.address.postcode || '-'}</span>
-                                </p>
-                                <p style="margin: 6px 0; font-size: 13px; line-height: 1.6;">
-                                    <strong style="color: #333;">🗺️ Negara:</strong> <span style="color: #555;">${data.address.country || '-'}</span>
-                                </p>
-                            ` : ''}
-                            <p style="margin: 6px 0; font-size: 13px; line-height: 1.6;">
-                                <strong style="color: #333;">📐 Koordinat:</strong><br>
-                                <span style="color: #555;">${campusLat.toFixed(6)}, ${campusLng.toFixed(6)}</span>
-                            </p>
-                        </div>
-                        <div style="text-align: center; font-size: 11px; color: #999; margin-top: 10px; padding-top: 10px; border-top: 1px solid #e0e0e0;">
-                            Sumber: Nominatim API (OpenStreetMap)
-                        </div>
-                    </div>
-                `;
-                
-                marker.bindPopup(popupContent, {
-                    maxWidth: 380,
-                    className: 'custom-popup'
-                });
-                
-                marker.addTo(poiGroup);
-                
-            } catch (error) {
-                console.error('❌ Error memuat data Nominatim:', error);
-            }
-        }
-
-        async function loadOverpassData() {
-            try {
-                const radius = 1000; // radius 1 km
-                const overpassQuery = `
-                    [out:json];
-                    (
-                        node["building"="residential"](around:${radius},${campusLat},${campusLng});
-                        way["building"="residential"](around:${radius},${campusLat},${campusLng});
-                        node["tourism"="guest_house"](around:${radius},${campusLat},${campusLng});
-                        node["amenity"="hostel"](around:${radius},${campusLat},${campusLng});
-                        node["amenity"](around:${radius},${campusLat},${campusLng});
-                        node["shop"](around:${radius},${campusLat},${campusLng});
-                    );
-                    out center;
-                `;
-
-                const response = await fetch("https://overpass-api.de/api/interpreter", {
-                    method: "POST",
-                    body: overpassQuery
-                });
-
-                if (!response.ok) throw new Error("Gagal mengambil data Overpass!");
-
-                const data = await response.json();
-                console.log("📍 Total POI ditemukan dari Overpass API:", data.elements.length);
-
-                let maxPOI = 50;
-                let count = 0;
-
-                data.elements.forEach(el => {
-                    if (count >= maxPOI) return;
-                    
-                    // Dapatkan koordinat (untuk way gunakan center)
-                    let lat, lon;
-                    if (el.lat && el.lon) {
-                        lat = el.lat;
-                        lon = el.lon;
-                    } else if (el.center) {
-                        lat = el.center.lat;
-                        lon = el.center.lon;
-                    } else {
-                        return;
-                    }
-
-                    // Identifikasi tipe POI
-                    const building = el.tags.building;
-                    const tourism = el.tags.tourism;
-                    const amenity = el.tags.amenity;
-                    const shop = el.tags.shop;
-                    
-                    let poiType, poiCategory, name;
-                    
-                    if (building === "residential") {
-                        poiType = "residential";
-                        poiCategory = "residential";
-                        name = el.tags.name || "Bangunan Residential";
-                    } else if (tourism === "guest_house") {
-                        poiType = "guest_house";
-                        poiCategory = "guest_house";
-                        name = el.tags.name || "Guest House";
-                    } else if (amenity === "hostel") {
-                        poiType = "hostel";
-                        poiCategory = "hostel";
-                        name = el.tags.name || "Hostel";
-                    } else if (amenity) {
-                        poiType = amenity;
-                        poiCategory = "amenity";
-                        name = el.tags.name || amenity.replace("_", " ");
-                    } else if (shop) {
-                        poiType = shop;
-                        poiCategory = "shop";
-                        name = el.tags.name || shop.replace("_", " ");
-                    } else {
-                        return;
-                    }
-
-                    count++;
-
-                    const poiInfo = getPOIIcon(poiCategory, poiType);
-
-                    const distance = Math.round(
-                        map.distance([campusLat, campusLng], [lat, lon])
-                    );
-
-                    // Custom marker POI
-                    const icon = L.divIcon({
-                        className: "poi-marker",
-                        html: `
-                            <div style="
-                                width:35px; height:35px;
-                                background:${poiInfo.bg};
-                                border:2px solid ${poiInfo.color};
-                                border-radius:50%;
-                                display:flex;
-                                align-items:center;
-                                justify-content:center;
-                                font-size:18px;
-                                box-shadow:0 2px 6px rgba(0,0,0,0.3);
-                            ">
-                            ${poiInfo.icon}
-                            </div>
-                        `,
-                        iconSize: [35, 35],
-                        iconAnchor: [17.5, 17.5]
-                    });
-
-                    const marker = L.marker([lat, lon], { icon });
-
-                    // Tooltip
-                    marker.bindTooltip(`
-                        <strong>${poiInfo.icon} ${name}</strong><br>
-                        <span style="font-size:11px;color:#666;">${distance}m dari kampus</span>
-                    `);
-
-                    // Popup detail POI
-                    marker.bindPopup(`
-                        <div style="min-width:250px;">
-                            <h3 style="
-                                margin:0 0 10px;
-                                color:${poiInfo.color};
-                                font-size:16px;
-                                border-bottom:2px solid ${poiInfo.color};
-                                padding-bottom:6px;
-                            ">
-                                ${poiInfo.icon} ${name}
-                            </h3>
-
-                            <p><strong>Kategori:</strong> ${poiType.replace("_", " ")}</p>
-                            <p><strong>Jarak:</strong> ${distance} meter dari kampus</p>
-
-                            ${el.tags["addr:street"] ? `<p><strong>📍 Jalan:</strong> ${el.tags["addr:street"]}</p>` : ""}
-                            ${el.tags["addr:housenumber"] ? `<p><strong>🏠 No:</strong> ${el.tags["addr:housenumber"]}</p>` : ""}
-                            ${el.tags["phone"] ? `<p><strong>📞 Telepon:</strong> ${el.tags["phone"]}</p>` : ""}
-                            ${el.tags["opening_hours"] ? `<p><strong>🕐 Jam Buka:</strong> ${el.tags["opening_hours"]}</p>` : ""}
-                            ${el.tags["contact:phone"] ? `<p><strong>📱 Kontak:</strong> ${el.tags["contact:phone"]}</p>` : ""}
-
-                            <p style="font-size:11px;color:#777;margin-top:10px;">
-                                Sumber: Overpass API (OpenStreetMap)
-                            </p>
-                        </div>
-                    `);
-
-                    marker.addTo(poiGroup);
-                });
-
-                console.log(`✅ Berhasil menambahkan ${count} POI ke peta`);
-
-            } catch (err) {
-                console.error("❌ Error Overpass API:", err);
-            }
-        }
-
-        // Jalankan fungsi Overpass dan Nominatim
-        loadNominatimData();
-        loadOverpassData();
-
-        function addCustomPOI(lat, lng, name, type, description) {
-            // Pilih icon berdasarkan type
-            const poiInfo = getPOIIcon(type, type);
-            
-            // Hitung jarak dari kampus
-            const distance = Math.round(map.distance([campusLat, campusLng], [lat, lng]));
-            
-            // Buat custom marker
-            const icon = L.divIcon({
-                className: "poi-marker",
-                html: `
-                    <div style="
-                        width:35px; height:35px;
-                        background:${poiInfo.bg};
-                        border:2px solid ${poiInfo.color};
-                        border-radius:50%;
-                        display:flex;
-                        align-items:center;
-                        justify-content:center;
-                        font-size:18px;
-                        box-shadow:0 2px 6px rgba(0,0,0,0.3);
-                    ">
-                    ${poiInfo.icon}
-                    </div>
-                `,
-                iconSize: [35, 35],
-                iconAnchor: [17.5, 17.5]
-            });
-            
-            const marker = L.marker([lat, lng], { icon });
-            
-            // Tooltip
-            marker.bindTooltip(`
-                <strong>${poiInfo.icon} ${name}</strong><br>
-                <span style="font-size:11px;color:#666;">${distance}m dari kampus</span>
-            `);
-            
-            // Popup
-            marker.bindPopup(`
-                <div style="min-width:250px;">
-                    <h3 style="
-                        margin:0 0 10px;
-                        color:${poiInfo.color};
-                        font-size:16px;
-                        border-bottom:2px solid ${poiInfo.color};
-                        padding-bottom:6px;
-                    ">
-                        ${poiInfo.icon} ${name}
-                    </h3>
-                    <p><strong>Kategori:</strong> ${type}</p>
-                    <p><strong>Deskripsi:</strong> ${description}</p>
-                    <p><strong>Jarak:</strong> ${distance} meter dari kampus</p>
-                    <p style="font-size:11px;color:#777;margin-top:10px;">
-                        POI Custom - Ditambahkan Manual
-                    </p>
-                </div>
-            `);
-            
-            marker.addTo(poiGroup);
-            console.log(`✅ POI "${name}" berhasil ditambahkan`);
-        }
-
-        
-        addCustomPOI(-6.904500, 106.873500, "Warung Makan Pak Budi", "restaurant", "Warung makan murah dekat kampus");
-        addCustomPOI(-6.906000, 106.874000, "ATM BCA", "atm", "ATM 24 jam");
-        addCustomPOI(-6.905500, 106.872800, "Toko Buku Gramedia", "convenience", "Toko buku dan alat tulis");
-        addCustomPOI(-6.907000, 106.873200, "Indomaret 24 Jam", "convenience", "Minimarket 24 jam");
-        addCustomPOI(-6.904800, 106.874500, "Apotek Kimia Farma", "pharmacy", "Apotek lengkap");
-
-        // Custom Icons
-        var campusIcon = L.divIcon({
-            className: 'custom-div-icon',
-            html: "<div style='background-color:#fff; border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:2px solid #333; box-shadow:0 3px 8px rgba(0,0,0,0.2); font-size:20px;'>🎓</div>",
-            iconSize: [40, 40],
-            iconAnchor: [20, 20]
-        });
-
-        var kostIcon = L.divIcon({
-            className: 'custom-div-icon',
-            html: "<div style='background-color:#fff; border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border:2px solid #666; box-shadow:0 2px 6px rgba(0,0,0,0.15); font-size:16px;'>🏠</div>",
-            iconSize: [32, 32],
-            iconAnchor: [16, 16]
-        });
-
-        // Variabel untuk menyimpan semua marker
-        let allMarkers = [];
-        let searchLayer;
-
-        // Load dan tampilkan Marker (Kosan & Kampus)
-        fetch('kosan_markers.geojson')
-            .then(res => res.json())
-            .then(data => {
-                searchLayer = L.geoJSON(data, {
-                    pointToLayer: function(feature, latlng) {
-                        if (feature.properties.type === 'campus') {
-                            return L.marker(latlng, {icon: campusIcon});
-                        } else {
-                            return L.marker(latlng, {icon: kostIcon});
-                        }
-                    },
-                    onEachFeature: function(feature, layer) {
-                        // Tooltip - Muncul saat hover
-                        var tooltipContent = '<strong style="color:#2c3e50; font-size:14px;">' + feature.properties.name + '</strong>';
-                        if (feature.properties.type === 'kost' && feature.properties.jarak) {
-                            tooltipContent += '<br><span style="color:#666; font-size:12px;">📍 ' + feature.properties.jarak + '</span>';
-                        }
-                        layer.bindTooltip(tooltipContent, {
-                            permanent: false,
-                            direction: 'top',
-                            offset: [0, -10],
-                            opacity: 0.9
-                        });
-
-                        // Popup - Muncul saat klik
-                        var content = '<div style="min-width:250px; max-width:300px;">';
-
-                        // Jika ada gambar di properti, tampilkan di atas popup
-                        if (feature.properties && feature.properties.image) {
-                            content += '<div class="popup-img-container"><img src="' + feature.properties.image + '" alt="' + (feature.properties.name || '') + '" class="popup-image"></div>';
-                        }
-
-                        content += '<h3 style="margin:0 0 10px 0; color:#2c3e50; font-size:18px; border-bottom:2px solid #333; padding-bottom:8px;">' + feature.properties.name + '</h3>';
-
-                        if (feature.properties.desc) {
-                            content += '<p style="margin:8px 0; color:#7f8c8d; font-size:13px; line-height:1.5;">' + feature.properties.desc + '</p>';
-                        }
-
-                        if (feature.properties.harga || feature.properties.fasilitas) {
-                            content += '<hr style="margin:12px 0; border:none; border-top:1px solid #ecf0f1;">';
-                        }
-
-                        if (feature.properties.harga) {
-                            content += '<p style="margin:6px 0; font-size:14px; background:#f8f9fa; padding:8px; border-radius:5px;"><strong style="color:#333;">💵 Harga:</strong><br><span style="color:#2c3e50; font-weight:bold;">' + feature.properties.harga + '</span></p>';
-                        }
-
-                        if (feature.properties.fasilitas) {
-                            content += '<p style="margin:6px 0; font-size:14px; background:#f8f9fa; padding:8px; border-radius:5px;"><strong style="color:#333;">✨ Fasilitas:</strong><br><span style="color:#2c3e50;">' + feature.properties.fasilitas + '</span></p>';
-                        }
-
-                        if (feature.properties.jarak) {
-                            content += '<p style="margin:10px 0 0 0; padding:8px 15px; background:#333; color:white; border-radius:20px; display:inline-block; font-size:13px; font-weight:bold; box-shadow:0 2px 5px rgba(0,0,0,0.2);">📍 ' + feature.properties.jarak + '</p>';
-                        }
-
-                        content += '</div>';
-                        layer.bindPopup(content, {
-                            maxWidth: 350,
-                            className: 'custom-popup'
-                        });
-                    }
-                }).addTo(markerGroup);
-
-                // Tambahkan kontrol pencarian
-                var searchControl = new L.Control.Search({
-                    layer: searchLayer,
-                    propertyName: 'name',
-                    marker: false,
-                    moveToLocation: function(latlng, title, map) {
-                        map.setView(latlng, 18); // Zoom lebih dekat ke lokasi yang dicari
-                        var searchedMarker = searchLayer.getLayers().find(layer => {
-                            return layer.feature.properties.name === title;
-                        });
-                        if (searchedMarker) {
-                            searchedMarker.openPopup();
-                        }
-                    },
-                    initial: false,
-                    zoom: 18,
-                    textPlaceholder: 'Cari lokasi kosan...',
-                    textErr: 'Lokasi tidak ditemukan'
-                });
-                
-                map.addControl(searchControl);
-            });
-
-        // Load dan tampilkan Polyline (Rute)
-        fetch('kosan_polyline.geojson')
-            .then(res => res.json())
-            .then(data => {
-                L.geoJSON(data, {
-                    style: function(feature) {
-                        return {
-                            color: '#e53935', // merah terang
-                            weight: 5,
-                            opacity: 0.9,
-                            dashArray: '10, 5'
-                        };
-                    },
-                    onEachFeature: function(feature, layer) {
-                        // Tooltip untuk polyline
-                        layer.bindTooltip('<strong style="color:#2c3e50;">🛣️ ' + feature.properties.name + '</strong><br><span style="color:#666;">Jarak: ' + feature.properties.jarak + '</span>', {
-                            permanent: false,
-                            direction: 'top',
-                            opacity: 0.9
-                        });
-
-                        // Popup untuk polyline
-                        var popupContent = '<div style="min-width:200px;">';
-                        popupContent += '<h3 style="margin:0 0 10px 0; color:#2c3e50; font-size:16px; border-bottom:2px solid #333; padding-bottom:5px;">🛣️ Rute</h3>';
-                        popupContent += '<p style="margin:5px 0; color:#7f8c8d; font-size:13px;"><strong>' + feature.properties.name + '</strong></p>';
-                        popupContent += '<p style="margin:10px 0 0 0; padding:6px 12px; background:#333; color:white; border-radius:15px; display:inline-block; font-size:13px;">📍 ' + feature.properties.jarak + '</p>';
-                        popupContent += '</div>';
-                        
-                        layer.bindPopup(popupContent, {
-                            className: 'custom-popup'
-                        });
-                    }
-                }).addTo(polylineGroup);
-            });
-
-        // Load dan tampilkan Polygon (Area Kampus & Zona Kosan)
-        fetch('kosan_polygon.geojson')
-            .then(res => res.json())
-            .then(data => {
-                L.geoJSON(data, {
-                    style: function(feature) {
-                        if (feature.properties.type === 'campus') {
-                            return {
-                                color: '#1976d2', // biru
-                                fillColor: '#1976d2',
-                                fillOpacity: 0.18,
-                                weight: 2
-                            };
-                        } else {
-                            return {
-                                color: '#8e24aa', // ungu
-                                fillColor: '#8e24aa',
-                                fillOpacity: 0.13,
-                                weight: 2,
-                                dashArray: '10, 5'
-                            };
-                        }
-                    },
-                    onEachFeature: function(feature, layer) {
-                        // Tooltip untuk polygon
-                        var tooltipContent = '<strong style="color:#2c3e50;">';
-                        if (feature.properties.type === 'campus') {
-                            tooltipContent += '🎓 ';
-                        } else {
-                            tooltipContent += '🏘️ ';
-                        }
-                        tooltipContent += feature.properties.name + '</strong>';
-                        
-                        layer.bindTooltip(tooltipContent, {
-                            permanent: false,
-                            direction: 'center',
-                            opacity: 0.9,
-                            offset: [0, 0]
-                        });
-
-                        // Popup untuk polygon
-                        var popupContent = '<div style="min-width:200px;">';
-                        if (feature.properties.type === 'campus') {
-                            popupContent += '<h3 style="margin:0 0 10px 0; color:#333; font-size:16px; border-bottom:2px solid #333; padding-bottom:5px;">🎓 Area Kampus</h3>';
-                            popupContent += '<p style="margin:5px 0; color:#7f8c8d; font-size:13px;">' + feature.properties.name + '</p>';
-                            popupContent += '<p style="margin:10px 0 0 0; font-size:12px; color:#7f8c8d;">Lokasi: Universitas Nusa Putra Sukabumi</p>';
-                        } else {
-                            popupContent += '<h3 style="margin:0 0 10px 0; color:#333; font-size:16px; border-bottom:2px solid #666; padding-bottom:5px;">🏘️ Zona Kosan</h3>';
-                            popupContent += '<p style="margin:5px 0; color:#7f8c8d; font-size:13px;">' + feature.properties.name + '</p>';
-                            popupContent += '<p style="margin:10px 0 0 0; font-size:12px; color:#7f8c8d;">Radius 500 meter dari kampus</p>';
-                        }
-                        popupContent += '</div>';
-                        
-                        layer.bindPopup(popupContent, {
-                            className: 'custom-popup'
-                        });
-                    }
-                }).addTo(polygonGroup);
-            });
-
-        // Layer Control
-        var baseLayers = {
-            "OpenStreetMap": osmLayer,
-            "Satellite": satelliteLayer
-        };
-
-        var overlays = {
-            "📍 Marker Kosan": markerGroup,
-            "🛣️ Rute ke Kosan": polylineGroup,
-            "🗺️ Area Kampus & Zona": polygonGroup,
-            "🏪 POI Sekitar (OSM)": poiGroup,
-            "🤖 Zona GeoAI (ML Prediction)": geoaiZoneGroup
-        };
-
-        // Tambahkan layer control ke peta
-        L.control.layers(baseLayers, overlays, {
-            position: 'topright',
-            collapsed: true
+        const map = L.map('map', {
+            zoomControl: false
+        }).setView([campusLat, campusLng], 17);
+        const baseLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 20
         }).addTo(map);
-
-        // Tambahkan semua overlay default
-        markerGroup.addTo(map);
-        polylineGroup.addTo(map);
-        polygonGroup.addTo(map);
-        poiGroup.addTo(map);
-        // geoaiZoneGroup sudah ditambahkan setelah createPredictionZones()
-
-        // ===============================
-        //  GPS REAL-TIME SIMULATION
-        // ===============================
-        
-        let gpsMarker = null;
-        let gpsPolyline = null;
-        let gpsPath = [];
-        let gpsInterval = null;
-        let isGPSActive = false;
-        let totalDistance = 0;
-        let startTime = null;
-        let pointsCount = 0;
-        let lastUpdateTime = null;
-        let currentSpeed = 0;
-        let lastPosition = null;
-        
-        const GPS_CENTER_LAT = campusLat;
-        const GPS_CENTER_LNG = campusLng;
-        const GPS_RADIUS = 0.005; // ~500 meter
-        
-        // Generate koordinat random
-        function generateRandomGPSCoordinate() {
-            const angle = Math.random() * 2 * Math.PI;
-            const r = Math.sqrt(Math.random()) * GPS_RADIUS;
-            const lat = GPS_CENTER_LAT + r * Math.cos(angle);
-            const lng = GPS_CENTER_LNG + r * Math.sin(angle);
-            return [lat, lng];
-        }
-        
-        // Update GPS Marker
-        function updateGPSMarker(lat, lng) {
-            if (!gpsMarker) {
-                const gpsIcon = L.divIcon({
-                    className: 'gps-marker',
-                    html: `
-                        <div style="
-                            width: 40px;
-                            height: 40px;
-                            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
-                            border: 3px solid white;
-                            border-radius: 50%;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            font-size: 20px;
-                            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.5);
-                        ">🚗</div>
-                    `,
-                    iconSize: [40, 40],
-                    iconAnchor: [20, 20]
-                });
-                
-                gpsMarker = L.marker([lat, lng], { icon: gpsIcon }).addTo(map);
-                gpsMarker.bindPopup(`
-                    <div style="min-width: 220px;">
-                        <h3 style="margin:0 0 10px 0; color:#2196F3; font-size:16px;">🚗 GPS Tracker</h3>
-                        <p><strong>📍 Koordinat:</strong><br>${lat.toFixed(6)}, ${lng.toFixed(6)}</p>
-                        <p><strong>🚀 Kecepatan:</strong> ${currentSpeed.toFixed(2)} km/h</p>
-                        <p><strong>🎯 Titik:</strong> ${pointsCount}</p>
-                        <p><strong>📏 Jarak:</strong> ${Math.round(totalDistance)} m</p>
-                        <p><strong>🕐 Update:</strong> ${new Date().toLocaleTimeString('id-ID')}</p>
-                    </div>
-                `);
-            } else {
-                gpsMarker.setLatLng([lat, lng]);
-                gpsMarker.getPopup().setContent(`
-                    <div style="min-width: 220px;">
-                        <h3 style="margin:0 0 10px 0; color:#2196F3; font-size:16px;">🚗 GPS Tracker</h3>
-                        <p><strong>📍 Koordinat:</strong><br>${lat.toFixed(6)}, ${lng.toFixed(6)}</p>
-                        <p><strong>🚀 Kecepatan:</strong> ${currentSpeed.toFixed(2)} km/h</p>
-                        <p><strong>🎯 Titik:</strong> ${pointsCount}</p>
-                        <p><strong>📏 Jarak:</strong> ${Math.round(totalDistance)} m</p>
-                        <p><strong>🕐 Update:</strong> ${new Date().toLocaleTimeString('id-ID')}</p>
-                    </div>
-                `);
-            }
-            map.setView([lat, lng], map.getZoom());
-        }
-        
-        // Update polyline
-        function updateGPSPolyline() {
-            if (gpsPath.length < 2) return;
-            
-            if (!gpsPolyline) {
-                gpsPolyline = L.polyline(gpsPath, {
-                    color: '#2196F3',
-                    weight: 4,
-                    opacity: 0.7,
-                    smoothFactor: 1
-                }).addTo(map);
-                
-                gpsPolyline.bindPopup(`
-                    <div style="min-width: 200px;">
-                        <h3 style="margin:0 0 10px 0; color:#2196F3; font-size:16px;">📍 Tracking Path</h3>
-                        <p><strong>Total Titik:</strong> ${gpsPath.length}</p>
-                        <p><strong>Total Jarak:</strong> ${Math.round(totalDistance)} m</p>
-                    </div>
-                `);
-            } else {
-                gpsPolyline.setLatLngs(gpsPath);
-                gpsPolyline.getPopup().setContent(`
-                    <div style="min-width: 200px;">
-                        <h3 style="margin:0 0 10px 0; color:#2196F3; font-size:16px;">📍 Tracking Path</h3>
-                        <p><strong>Total Titik:</strong> ${gpsPath.length}</p>
-                        <p><strong>Total Jarak:</strong> ${Math.round(totalDistance)} m</p>
-                    </div>
-                `);
-            }
-        }
-        
-        // Hitung jarak
-        function calculateDistance(lat1, lng1, lat2, lng2) {
-            const R = 6371000;
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLng = (lng2 - lng1) * Math.PI / 180;
-            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                      Math.sin(dLng/2) * Math.sin(dLng/2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            return R * c;
-        }
-        
-        // Update statistik
-        function updateGPSStats() {
-            document.getElementById('currentPosition').textContent = 
-                gpsPath.length > 0 ? 
-                `${gpsPath[gpsPath.length-1][0].toFixed(6)}, ${gpsPath[gpsPath.length-1][1].toFixed(6)}` : 
-                '-';
-            
-            document.getElementById('currentSpeed').textContent = `${currentSpeed.toFixed(2)} km/h`;
-            document.getElementById('totalDistance').textContent = `${Math.round(totalDistance)} m`;
-            document.getElementById('pointsCount').textContent = pointsCount;
-            document.getElementById('lastUpdate').textContent = 
-                lastUpdateTime ? new Date(lastUpdateTime).toLocaleTimeString('id-ID') : '-';
-            
-            if (startTime) {
-                const elapsed = Math.floor((Date.now() - startTime) / 1000);
-                document.getElementById('elapsedTime').textContent = `${elapsed}s`;
-            }
-        }
-        
-        // Simulasi pergerakan GPS
-        function simulateGPSMovement() {
-            const currentTime = Date.now();
-            const [newLat, newLng] = generateRandomGPSCoordinate();
-            
-            if (gpsPath.length > 0) {
-                const lastPos = gpsPath[gpsPath.length - 1];
-                const distance = calculateDistance(lastPos[0], lastPos[1], newLat, newLng);
-                totalDistance += distance;
-                
-                if (lastUpdateTime) {
-                    const timeElapsed = (currentTime - lastUpdateTime) / 1000;
-                    currentSpeed = (distance / timeElapsed) * 3.6; // m/s ke km/h
-                }
-            }
-            
-            lastUpdateTime = currentTime;
-            lastPosition = [newLat, newLng];
-            gpsPath.push([newLat, newLng]);
-            pointsCount++;
-            
-            updateGPSMarker(newLat, newLng);
-            updateGPSPolyline();
-            updateGPSStats();
-        }
-        
-        // Start GPS
-        function startGPSSimulation() {
-            if (isGPSActive) return;
-            
-            isGPSActive = true;
-            startTime = Date.now();
-            
-            document.getElementById('gpsStatus').textContent = 'Aktif';
-            document.getElementById('statusIndicator').classList.remove('status-inactive');
-            document.getElementById('statusIndicator').classList.add('status-active');
-            
-            simulateGPSMovement();
-            gpsInterval = setInterval(simulateGPSMovement, 5000); // Setiap 5 detik
-            
-            console.log('✅ GPS Simulation Started (5 second interval)');
-        }
-        
-        // Stop GPS
-        function stopGPSSimulation() {
-            if (!isGPSActive) return;
-            
-            isGPSActive = false;
-            
-            if (gpsInterval) {
-                clearInterval(gpsInterval);
-                gpsInterval = null;
-            }
-            
-            document.getElementById('gpsStatus').textContent = 'Dihentikan';
-            document.getElementById('statusIndicator').classList.remove('status-active');
-            document.getElementById('statusIndicator').classList.add('status-inactive');
-            
-            console.log('⏸️ GPS Simulation Stopped');
-        }
-        
-        // Reset GPS
-        function resetGPSSimulation() {
-            stopGPSSimulation();
-            
-            if (gpsMarker) {
-                map.removeLayer(gpsMarker);
-                gpsMarker = null;
-            }
-            
-            if (gpsPolyline) {
-                map.removeLayer(gpsPolyline);
-                gpsPolyline = null;
-            }
-            
-            gpsPath = [];
-            totalDistance = 0;
-            pointsCount = 0;
-            startTime = null;
-            lastUpdateTime = null;
-            currentSpeed = 0;
-            lastPosition = null;
-            
-            document.getElementById('gpsStatus').textContent = 'Tidak Aktif';
-            document.getElementById('statusIndicator').classList.remove('status-active');
-            document.getElementById('statusIndicator').classList.add('status-inactive');
-            document.getElementById('currentPosition').textContent = '-';
-            document.getElementById('currentSpeed').textContent = '0 km/h';
-            document.getElementById('totalDistance').textContent = '0 m';
-            document.getElementById('elapsedTime').textContent = '0s';
-            document.getElementById('lastUpdate').textContent = '-';
-            document.getElementById('pointsCount').textContent = '0';
-            
-            map.setView([campusLat, campusLng], 16);
-            
-            console.log('🔄 GPS Simulation Reset');
-        }
-        
-        // Simpan ke Database (LocalStorage)
-        function saveToDatabase() {
-            if (gpsPath.length === 0) {
-                alert('❌ Tidak ada data GPS untuk disimpan!');
+        const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri'
+        });
+        const layers = {
+            markers: L.layerGroup().addTo(map),
+            zones: L.layerGroup().addTo(map),
+            poi: L.layerGroup(),
+            routes: L.layerGroup().addTo(map),
+            user: L.layerGroup().addTo(map)
+        };
+        L.control.zoom({ position: 'topright' }).addTo(map);
+        let userMarker = null;
+        let accuracyCircle = null;
+        let watchId = null;
+        function locateUser() {
+            if (!navigator.geolocation) {
+                alert("Browser Anda tidak mendukung Geolocation.");
                 return;
             }
-            
-            const gpsData = {
-                timestamp: new Date().toISOString(),
-                totalPoints: pointsCount,
-                totalDistance: Math.round(totalDistance),
-                avgSpeed: (currentSpeed).toFixed(2),
-                duration: startTime ? Math.floor((Date.now() - startTime) / 1000) : 0,
-                path: gpsPath,
-                startLocation: gpsPath[0],
-                endLocation: gpsPath[gpsPath.length - 1]
-            };
-            
-            // Simpan ke LocalStorage
-            let savedSessions = JSON.parse(localStorage.getItem('gpsTracking') || '[]');
-            savedSessions.push(gpsData);
-            localStorage.setItem('gpsTracking', JSON.stringify(savedSessions));
-            
-            console.log('💾 Data GPS tersimpan ke database:', gpsData);
-            alert(`✅ Berhasil menyimpan!\n\n📍 Total Titik: ${pointsCount}\n📏 Jarak: ${Math.round(totalDistance)}m\n⏱️ Durasi: ${gpsData.duration}s\n\nData tersimpan di LocalStorage (${savedSessions.length} sesi)`);
-        }
-        
-        // Toggle GPS Panel (Popup)
-        function toggleGPSPanel() {
-            const panel = document.getElementById('gpsPanel');
-            const backdrop = document.getElementById('gpsBackdrop');
-            
-            panel.classList.toggle('active');
-            backdrop.classList.toggle('active');
-        }
-
-        // Close panel dengan ESC key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                const panel = document.getElementById('gpsPanel');
-                const backdrop = document.getElementById('gpsBackdrop');
-                if (panel.classList.contains('active')) {
-                    panel.classList.remove('active');
-                    backdrop.classList.remove('active');
+            const btn = document.querySelector('button[title="Lokasi Saya"]');
+            btn.classList.add('active');
+            if (watchId) navigator.geolocation.clearWatch(watchId);
+            watchId = navigator.geolocation.watchPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    const accuracy = position.coords.accuracy;
+                    if (!userMarker) {
+                        const userIcon = L.divIcon({
+                            className: 'user-marker-icon',
+                            html: `<div style="
+                                width: 24px; height: 24px; 
+                                background: #4f46e5; 
+                                border: 3px solid white; 
+                                border-radius: 50%; 
+                                box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.3);
+                                animation: pulse 2s infinite;
+                            "></div>`,
+                            iconSize: [24, 24],
+                            iconAnchor: [12, 12]
+                        });
+                        userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(layers.user);
+                        userMarker.bindPopup("📍 Lokasi Anda (Real-time)");
+                    } else {
+                        userMarker.setLatLng([lat, lng]);
+                    }
+                    if (!accuracyCircle) {
+                        accuracyCircle = L.circle([lat, lng], {
+                            radius: accuracy,
+                            color: '#4f46e5',
+                            fillColor: '#4f46e5',
+                            fillOpacity: 0.1,
+                            weight: 1
+                        }).addTo(layers.user);
+                    } else {
+                        accuracyCircle.setLatLng([lat, lng]);
+                        accuracyCircle.setRadius(accuracy);
+                    }
+                },
+                (error) => {
+                    console.error("Error Geolocation:", error);
+                    let msg = "Gagal mengambil lokasi.";
+                    if (error.code === 1) msg = "Izin lokasi ditolak.";
+                    else if (error.code === 2) msg = "Lokasi tidak tersedia.";
+                    else if (error.code === 3) msg = "Waktu permintaan habis.";
+                    alert(msg);
+                    btn.classList.remove('active');
+                },
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 5000,
+                    timeout: 10000
                 }
+            );
+        }
+        function resetView() {
+            map.flyTo([campusLat, campusLng], 17);
+        }
+        let isSatellite = false;
+        function toggleLayerMenu() {
+            if (isSatellite) {
+                map.removeLayer(satelliteLayer);
+                map.addLayer(baseLayer);
+            } else {
+                map.removeLayer(baseLayer);
+                map.addLayer(satelliteLayer);
             }
-        });
-        
-        // Load data dari database saat page load
-        window.addEventListener('load', function() {
-            const savedSessions = JSON.parse(localStorage.getItem('gpsTracking') || '[]');
-            console.log(`📊 ${savedSessions.length} sesi GPS tersimpan di database`);
-            if (savedSessions.length > 0) {
-                console.log('🗄️ Data terakhir:', savedSessions[savedSessions.length - 1]);
+            isSatellite = !isSatellite;
+        }
+        function toggleLegend() {
+            const content = document.getElementById('legendContent');
+            content.classList.toggle('collapsed');
+        }
+        const geoAI = {
+            calculateScore: (kost) => {
+                const distance = calculateDistance(campusLat, campusLng, kost.geometry.coordinates[1], kost.geometry.coordinates[0]);
+                const price = parseInt(kost.properties.harga.replace(/[^0-9]/g, '')) || 0;
+                const facilitiesCount = (kost.properties.fasilitas || '').split(',').length;
+                const normDist = Math.max(0, 100 - (distance / 10)); 
+                const normPrice = Math.max(0, 100 - (price / 10000));
+                const normFac = facilitiesCount * 20;
+                const total = (normDist * 0.4) + (normPrice * 0.3) + (normFac * 0.3);
+                return {
+                    score: total,
+                    category: total >= 70 ? 'optimal' : total >= 50 ? 'potensial' : 'kurang'
+                };
             }
-        });
-
-        // ==================== CHAT AI FUNCTIONS ====================
-        
-        // Data kost untuk AI knowledge base
-        let kostDatabase = [];
-
-        // Load kost data untuk AI
+        };
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            var R = 6371e3;
+            var φ1 = lat1 * Math.PI/180;
+            var φ2 = lat2 * Math.PI/180;
+            var Δφ = (lat2-lat1) * Math.PI/180;
+            var Δλ = (lon2-lon1) * Math.PI/180;
+            var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                    Math.cos(φ1) * Math.cos(φ2) *
+                    Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+        let kostDataList = [];
         fetch('kosan_markers.geojson')
-            .then(response => response.json())
+            .then(r => r.json())
             .then(data => {
-                kostDatabase = data.features.filter(f => f.properties.type === 'kost').map(kost => ({
-                    name: kost.properties.name,
-                    harga: kost.properties.harga,
-                    fasilitas: kost.properties.fasilitas,
-                    jarak: kost.properties.jarak,
-                    desc: kost.properties.desc,
-                    coords: kost.geometry.coordinates,
-                    score: calculateKostScore(kost).score,
-                    category: calculateKostScore(kost).category
-                }));
-                console.log('✅ AI Knowledge Base loaded:', kostDatabase.length + ' kost');
+                const searchLayer = L.geoJSON(data, {
+                    pointToLayer: (feature, latlng) => {
+                        if (feature.properties.type === 'campus') {
+                            return L.marker(latlng, {
+                                icon: L.divIcon({
+                                    className: 'marker-icon-wrapper',
+                                    html: '<i class="fa-solid fa-graduation-cap" style="font-size: 20px; color: #333;"></i>',
+                                    iconSize: [40, 40],
+                                    bgPos: [20, 20]
+                                })
+                            });
+                        }
+                        return L.marker(latlng, {
+                            icon: L.divIcon({
+                                className: 'marker-icon-wrapper',
+                                html: '<i class="fa-solid fa-house" style="font-size: 16px; color: #4f46e5;"></i>',
+                                iconSize: [32, 32]
+                            })
+                        });
+                    },
+                    onEachFeature: (feature, layer) => {
+                        if(feature.properties.type === 'kost') {
+                            const analysis = geoAI.calculateScore(feature);
+                            feature.properties.analysis = analysis;
+                            const dist = Math.round(calculateDistance(campusLat, campusLng, feature.geometry.coordinates[1], feature.geometry.coordinates[0]));
+                            feature.properties.realDistance = dist;
+                            kostDataList.push(feature.properties);
+                            const color = analysis.category === 'optimal' ? '#4CAF50' : 
+                                          analysis.category === 'potensial' ? '#FFC107' : '#F44336';
+                            L.circle([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], {
+                                radius: 100,
+                                color: color,
+                                fillColor: color,
+                                fillOpacity: 0.2,
+                                dashArray: '5,5',
+                                weight: 1
+                            }).addTo(layers.zones);
+                        }
+                        const props = feature.properties;
+                        const isKost = props.type === 'kost';
+                        const scoreInfo = isKost ? props.analysis : null;
+                        const popupContent = `
+                            <div class="modern-popup-content">
+                                <div class="popup-hero" style="background-image: url('${props.image || 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'}')">
+                                    <div class="popup-title">${props.name}</div>
+                                </div>
+                                <div class="popup-body">
+                                    ${isKost ? 
+                                        `<span class="popup-tag ${scoreInfo.category === 'optimal' ? 'tag-success' : 'tag-warning'}">
+                                            ${scoreInfo.category.toUpperCase()}
+                                        </span>` : ''}
+                                    <div class="popup-info-row">
+                                        <i class="fa-solid fa-money-bill-wave"></i>
+                                        <span>${props.harga || '-'}</span>
+                                    </div>
+                                    <div class="popup-info-row">
+                                        <i class="fa-solid fa-ruler"></i>
+                                        <span>${props.jarak || '0m'}</span>
+                                    </div>
+                                    ${props.desc ? `<p style="font-size: 0.85rem; color: #666; margin-top: 8px;">${props.desc}</p>` : ''}
+                                    ${isKost ? `
+                                        <div class="popup-score">
+                                            <span style="font-size: 0.8rem; font-weight: 600; color: #333;">AI Matching Score</span>
+                                            <div class="score-circle" style="background: ${scoreInfo.category === 'optimal' ? '#10b981' : '#f59e0b'}">
+                                                ${Math.round(scoreInfo.score)}
+                                            </div>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `;
+                        layer.bindPopup(popupContent, { className: 'modern-popup', minWidth: 280 });
+                    }
+                }).addTo(layers.markers);
+                const searchControl = new L.Control.Search({
+                    layer: searchLayer,
+                    propertyName: 'name',
+                    zoom: 18,
+                    marker: false,
+                    collapsed: false,
+                    autoCollapse: false,
+                    textPlaceholder: 'Cari lokasi, kost, atau gedung...',
+                    moveToLocation: function(latlng, title, map) {
+                        map.flyTo(latlng, 18);
+                    }
+                });
+                map.addControl(searchControl);
             });
-
-        function toggleChatAI() {
-            const container = document.getElementById('chatAIContainer');
-            const btn = document.getElementById('chatAIBtn');
-            container.classList.toggle('active');
-            btn.classList.toggle('active');
-            
-            if (container.classList.contains('active')) {
-                document.getElementById('chatInput').focus();
-            }
+        fetch('kosan_polyline.geojson').then(r => r.json()).then(data => {
+            L.geoJSON(data, { style: { color: '#ef4444', weight: 4, opacity: 0.7, dashArray: '10, 10' } }).addTo(layers.routes);
+        });
+        fetch('kosan_polygon.geojson').then(r => r.json()).then(data => {
+            L.geoJSON(data, { 
+                style: (f) => ({ 
+                    color: f.properties.type === 'campus' ? '#4f46e5' : '#8b5cf6',
+                    fillOpacity: 0.1, weight: 1 
+                }) 
+            }).addTo(layers.zones);
+        });
+        function toggleChat() {
+            document.getElementById('chatOverlay').classList.toggle('active');
         }
-
-        function handleChatKeyPress(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
+        function handleEnter(e) {
+            if (e.key === 'Enter') sendMessage();
         }
-
-        function sendQuickQuestion(question) {
-            document.getElementById('chatInput').value = question;
+        function sendQuickMsg(msg) {
+            document.getElementById('chatInput').value = msg;
             sendMessage();
         }
-
         function sendMessage() {
             const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            
-            // Add user message
-            addMessage(message, 'user');
+            const txt = input.value.trim();
+            if (!txt) return;
+            addMsg(txt, 'user');
             input.value = '';
-            
-            // Show typing indicator
-            showTypingIndicator();
-            
-            // Simulate AI thinking time
             setTimeout(() => {
-                hideTypingIndicator();
-                const aiResponse = generateAIResponse(message);
-                addMessage(aiResponse, 'ai');
-            }, 1000 + Math.random() * 1000);
+                const response = getAIResponse(txt);
+                addMsg(response, 'ai');
+            }, 800);
         }
-
-        function addMessage(text, type) {
-            const messagesContainer = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}`;
-            
-            const avatar = document.createElement('div');
-            avatar.className = 'message-avatar';
-            avatar.textContent = type === 'ai' ? '🤖' : '👤';
-            
-            const bubble = document.createElement('div');
-            bubble.className = 'message-bubble';
-            bubble.innerHTML = text;
-            
-            messageDiv.appendChild(avatar);
-            messageDiv.appendChild(bubble);
-            messagesContainer.appendChild(messageDiv);
-            
-            // Scroll to bottom
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        function addMsg(txt, type) {
+            const body = document.getElementById('chatBody');
+            const div = document.createElement('div');
+            div.className = `message ${type}`;
+            div.innerHTML = `<div class="msg-bubble">${txt}</div>`;
+            body.appendChild(div);
+            body.scrollTop = body.scrollHeight;
         }
-
-        function showTypingIndicator() {
-            const messagesContainer = document.getElementById('chatMessages');
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'message ai';
-            typingDiv.id = 'typingIndicator';
-            typingDiv.innerHTML = `
-                <div class="message-avatar">🤖</div>
-                <div class="typing-indicator active">
-                    <div class="typing-dots">
-                        <span></span><span></span><span></span>
-                    </div>
-                </div>
-            `;
-            messagesContainer.appendChild(typingDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        function hideTypingIndicator() {
-            const indicator = document.getElementById('typingIndicator');
-            if (indicator) indicator.remove();
-        }
-
-        function generateAIResponse(userMessage) {
-            const msg = userMessage.toLowerCase();
-            
-            // AI Pattern Matching & Response Generation
-            
-            // Greeting
-            if (msg.match(/^(hi|halo|hai|hello|hey|selamat)/)) {
-                return '👋 Halo! Saya siap membantu Anda mencari kost yang sesuai. Mau tanya apa?';
+        function getAIResponse(query) {
+            const q = query.toLowerCase();
+            if (q.includes('terdekat')) {
+                const sorted = [...kostDataList].sort((a,b) => parseInt(a.realDistance || 9999) - parseInt(b.realDistance || 9999));
+                const best = sorted[0];
+                return best ? `📍 <strong>${best.name}</strong> adalah yang terdekat (${best.jarak || best.realDistance + 'm'}). Harganya ${best.harga}.` : "Maaf, data belum dimuat sepenuhnya.";
             }
-            
-            // Kost terdekat
-            if (msg.match(/terdekat|dekat|nearest|jarak/)) {
-                const nearest = kostDatabase.sort((a, b) => {
-                    return parseInt(a.jarak) - parseInt(b.jarak);
-                })[0];
-                return `📍 <strong>Kost Terdekat:</strong><br><br>
-                        🏠 <strong>${nearest.name}</strong><br>
-                        📏 Jarak: ${nearest.jarak}<br>
-                        💰 Harga: ${nearest.harga}<br>
-                        ✨ Fasilitas: ${nearest.fasilitas}<br>
-                        🎯 AI Score: ${nearest.score.toFixed(1)}/100<br><br>
-                        <em>Kost ini paling dekat dari kampus!</em>`;
+            if (q.includes('murah') || q.includes('termurah')) {
+                const sorted = [...kostDataList].sort((a,b) => parseInt(a.harga.replace(/\D/g,'')) - parseInt(b.harga.replace(/\D/g,'')));
+                const cheap = sorted[0];
+                return cheap ? `💰 <strong>${cheap.name}</strong> paling hemat budget! Cuma ${cheap.harga} dengan skor kecocokan ${Math.round(cheap.analysis.score)}.`: "Data sedang diproses...";
             }
-            
-            // Kost termurah
-            if (msg.match(/murah|cheap|termurah|hemat|terjangkau/)) {
-                const cheapest = kostDatabase.sort((a, b) => {
-                    return parseInt(a.harga.replace(/[^0-9]/g, '')) - parseInt(b.harga.replace(/[^0-9]/g, ''));
-                })[0];
-                return `💰 <strong>Kost Termurah:</strong><br><br>
-                        🏠 <strong>${cheapest.name}</strong><br>
-                        💵 Harga: ${cheapest.harga}<br>
-                        📏 Jarak: ${cheapest.jarak}<br>
-                        ✨ Fasilitas: ${cheapest.fasilitas}<br>
-                        🎯 AI Score: ${cheapest.score.toFixed(1)}/100<br><br>
-                        <em>Paling hemat untuk budget mahasiswa!</em>`;
+            if (q.includes('terbaik') || q.includes('rekomendasi')) {
+                const sorted = [...kostDataList].sort((a,b) => b.analysis.score - a.analysis.score);
+                const toplist = sorted.slice(0, 3).map(k => `• <strong>${k.name}</strong> (Skor: ${Math.round(k.analysis.score)})`).join('<br>');
+                return `⭐ Berikut Top 3 Rekomendasi GeoAI:<br>${toplist}<br><br>Mereka dipilih berdasarkan jarak, harga, dan fasilitas.`;
             }
-            
-            // Kost terbaik / rekomendasi
-            if (msg.match(/terbaik|best|bagus|rekomendasi|recommend|optimal/)) {
-                const best = kostDatabase.sort((a, b) => b.score - a.score)[0];
-                return `⭐ <strong>Kost Terbaik (AI Recommendation):</strong><br><br>
-                        🏠 <strong>${best.name}</strong><br>
-                        🎯 AI Score: ${best.score.toFixed(1)}/100 ${best.category === 'optimal' ? '✅' : ''}<br>
-                        💰 Harga: ${best.harga}<br>
-                        📏 Jarak: ${best.jarak}<br>
-                        ✨ Fasilitas: ${best.fasilitas}<br><br>
-                        <em>Rekomendasi terbaik berdasarkan analisis AI!</em>`;
+            if (q.includes('geoai')) {
+                return "🤖 <strong>GeoAI System</strong> menganalisis lokasi kost menggunakan algoritma bobot: Jarak (40%), Harga (30%), dan Fasilitas (30%). Zona Hijau berarti sangat direkomendasikan!";
             }
-            
-            // Fasilitas
-            if (msg.match(/fasilitas|facility|amenity|wifi|ac|parkir|dapur/)) {
-                const withFacilities = kostDatabase.filter(k => k.fasilitas && k.fasilitas.split(',').length >= 3);
-                if (withFacilities.length > 0) {
-                    const best = withFacilities[0];
-                    return `🏠 <strong>Kost dengan Fasilitas Lengkap:</strong><br><br>
-                            ${withFacilities.map(k => `
-                            • <strong>${k.name}</strong><br>
-                            &nbsp;&nbsp;✨ ${k.fasilitas}<br>
-                            &nbsp;&nbsp;💰 ${k.harga}<br>
-                            `).join('<br>')}
-                            <em>Semua sudah dilengkapi fasilitas memadai!</em>`;
-                }
-            }
-            
-            // Harga range
-            if (msg.match(/harga|price|biaya|cost|berapa/)) {
-                const prices = kostDatabase.map(k => parseInt(k.harga.replace(/[^0-9]/g, '')));
-                const min = Math.min(...prices);
-                const max = Math.max(...prices);
-                return `💵 <strong>Range Harga Kost:</strong><br><br>
-                        📊 Rp ${min.toLocaleString()} - Rp ${max.toLocaleString()}/bulan<br><br>
-                        📋 Detail per kost:<br>
-                        ${kostDatabase.map(k => `• ${k.name}: ${k.harga}`).join('<br>')}<br><br>
-                        <em>Pilih sesuai budget Anda!</em>`;
-            }
-            
-            // List semua kost
-            if (msg.match(/list|semua|all|tampilkan|show/)) {
-                return `📋 <strong>Daftar Semua Kost:</strong><br><br>
-                        ${kostDatabase.map((k, i) => `
-                        ${i+1}. <strong>${k.name}</strong><br>
-                        &nbsp;&nbsp;&nbsp;💰 ${k.harga} | 📏 ${k.jarak}<br>
-                        &nbsp;&nbsp;&nbsp;🎯 AI Score: ${k.score.toFixed(1)}/100<br>
-                        `).join('<br>')}
-                        <em>Total ${kostDatabase.length} kost tersedia!</em>`;
-            }
-            
-            // GeoAI explanation
-            if (msg.match(/geoai|ai|ml|machine learning|algoritma|score/)) {
-                return `🤖 <strong>Tentang GeoAI System:</strong><br><br>
-                        Sistem ini menggunakan <strong>K-Means Clustering</strong> dengan weighted scoring:<br><br>
-                        • 📏 Jarak ke kampus (40%)<br>
-                        • 💰 Harga sewa (30%)<br>
-                        • 🏠 Fasilitas (30%)<br><br>
-                        Setiap kost diberi score 0-100 dan dikategorikan:<br>
-                        ✅ Optimal (70+)<br>
-                        ⚡ Potensial (50-69)<br>
-                        ⚠️ Kurang Layak (<50)<br><br>
-                        <em>AI membantu Anda memilih kost terbaik secara objektif!</em>`;
-            }
-            
-            // Help
-            if (msg.match(/help|bantuan|bisa apa/)) {
-                return `💡 <strong>Saya bisa membantu Anda dengan:</strong><br><br>
-                        📍 Cari kost terdekat<br>
-                        💰 Cari kost termurah<br>
-                        ⭐ Rekomendasi kost terbaik<br>
-                        🏠 Info fasilitas lengkap<br>
-                        📊 Perbandingan harga<br>
-                        🤖 Penjelasan AI/GeoAI<br><br>
-                        <em>Tanya apa saja tentang kost!</em>`;
-            }
-            
-            // Default response
-            return `🤔 Hmm, saya belum sepenuhnya memahami pertanyaan Anda.<br><br>
-                    Coba tanya:<br>
-                    • "Kost terdekat dari kampus?"<br>
-                    • "Kost mana yang termurah?"<br>
-                    • "Rekomendasi kost terbaik"<br>
-                    • "Kost dengan fasilitas lengkap"<br><br>
-                    Atau ketik <strong>"help"</strong> untuk bantuan! 😊`;
+            return "Saya bisa bantu cari kost: 'terdekat', 'termurah', atau 'rekomendasi terbaik'. Mau coba yang mana?";
         }
     </script>
 </body>
